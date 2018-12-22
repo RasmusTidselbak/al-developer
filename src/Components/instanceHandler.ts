@@ -1,10 +1,8 @@
 import * as vscode from "vscode";
 import * as fs from 'fs';
-// import ServerConfig from "../Models/ServerConfig";
 import { ServerConfigMethods as sc, ServerConfig } from "../Models/ServerConfig";
-import DockerConfig from "../Models/DockerConfig";
 import httpHandler from "./Instance/httpHandler";
-// import { Server } from "http";
+import localhostHandler from "./Instance/localhostHandler";
 
 export default class {
     public static newInstance() {
@@ -15,10 +13,19 @@ export default class {
         let settingsPath = vscode.workspace.rootPath + "/settings.json";
         if (!fs.existsSync(settingsPath)) {
             settingsPath = vscode.workspace.rootPath + "../settings.json";
-        }
-
-        let rawdata: any = fs.readFileSync(settingsPath);
-        let settingsFile = JSON.parse(rawdata);
+        } 
+        
+        let settingsFile;
+        if (fs.existsSync(settingsPath)) {
+            let rawdata: any = fs.readFileSync(settingsPath);
+            settingsFile = JSON.parse(rawdata);    
+        } else {
+            settingsFile = {
+                "version": "bcsandbox",
+                "cu": "rtm",
+                "local": "dk"
+            };
+        }        
 
         let NAVVersion = settingsFile.version ? settingsFile.version : "bcsandbox";
         let NAVCU: string = settingsFile.cu ? settingsFile.cu : "rtm";
@@ -35,6 +42,7 @@ export default class {
         const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
         switch (dockerAgentType) {
             case 'localhost':
+                localhostHandler.newInstance(dockerConf);
                 break;
             case 'server':
                 httpHandler.newInstance(dockerConf);
