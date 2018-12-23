@@ -47,8 +47,6 @@ export default class {
             case 'server':
                 httpHandler.newInstance(dockerConf);
                 break;
-            case 'sandbox':
-                break;
         }
 
         const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
@@ -62,7 +60,8 @@ export default class {
         serverConfigs.push(dockerConf);
         config.update('configurations', serverConfigs);
 
-        this.copyPassword();
+        
+        vscode.commands.executeCommand('aldev.copyPassword');
 
     }
 
@@ -87,9 +86,9 @@ export default class {
 
         const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
         switch (dockerAgentType) {
-            case 'sandbox':
-                break;
             case 'localhost':
+                localhostHandler.removeInstance(dockerConf);
+                break; 
             case 'server':
                 httpHandler.removeInstance(dockerConf);
                 break;
