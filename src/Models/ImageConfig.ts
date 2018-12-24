@@ -14,7 +14,7 @@ export default class{
      * GetImageName
      */
     public GetImageName():string {
-        return "mcr.microsoft.com/businesscentral/sandbox:dk"; 
+        return "mcr.microsoft.com/businesscentral/sandbox:us"; 
     }
 
 }
