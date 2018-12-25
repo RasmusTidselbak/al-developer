@@ -50,6 +50,7 @@ typings/
 
 # Output
 out/
+.vscode-test/
 
 # Output of 'npm pack'
 *.tgz

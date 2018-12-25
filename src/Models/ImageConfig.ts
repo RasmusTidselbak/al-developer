@@ -14,7 +14,28 @@ export default class{
      * GetImageName
      */
     public GetImageName():string {
-        return "mcr.microsoft.com/businesscentral/sandbox:us"; 
+        let imageName: string;
+        let tagBegan: boolean = false;
+        if (this.version.toLowerCase() === 'bcsandbox') {
+            imageName = "mcr.microsoft.com/businesscentral/sandbox";
+        } else {
+            imageName = "microsoft/dynamics-nav:" + this.version;
+            tagBegan = true;
+        }
+
+        if(this.cu !== "" && this.cu !== undefined){
+            imageName += tagBegan ? "-" : ":";
+            imageName += "cu" + this.cu;
+
+            tagBegan = true;
+        }
+
+        if(this.local !== "" && this.local !== undefined){
+            imageName += tagBegan ? "-" : ":";
+            imageName += this.local;
+        }
+
+        return imageName;
     }
 
 }

@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { ServerConfig } from "../../Models/ServerConfig";
 
 export default class {
-    public static newInstance(serverConf: ServerConfig) {
+    public static newInstance(serverConf: ServerConfig, callback: Function) {
         let request = require('request');
         let agentURL = vscode.workspace.getConfiguration().get("aldev.dockerAgentURL", "http://localhost");
         const reqOptions =
@@ -33,7 +33,7 @@ export default class {
             serverConf.port = body.devport;
             serverConf.docker.name = body.name;
 
-            console.log(body);
+            callback(serverConf);
         });
     }
 

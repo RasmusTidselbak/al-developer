@@ -1,7 +1,6 @@
 import { ServerConfig } from "../../Models/ServerConfig";
 import * as vscode from "vscode";
 import ImageConfig from "../../Models/ImageConfig";
-import { stat } from "fs";
 
 export default class{
     public static newInstance(serverConf: ServerConfig, callback: Function){
@@ -76,7 +75,7 @@ export default class{
             then((output:any) => {
                 console.log(output);
                 vscode.window.showInformationMessage('The instance ' + serverConf.docker.name + ' is starting.' );
-                callback();
+                callback(serverConf);
                 statusdisp.dispose();
             })
             .catch((err:any) => {
