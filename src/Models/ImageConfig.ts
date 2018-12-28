@@ -6,7 +6,7 @@ export default class{
         this.local = local;
     }
 
-    public version: string = "bcsandbox";
+    public version: string = "BC";
     public cu?: string;
     public local?: string;
 
@@ -16,7 +16,7 @@ export default class{
     public GetImageName():string {
         let imageName: string;
         let tagBegan: boolean = false;
-        if (this.version.toLowerCase() === 'bcsandbox') {
+        if (this.version.toUpperCase() === 'BC') {
             imageName = "mcr.microsoft.com/businesscentral/sandbox";
         } else {
             imageName = "microsoft/dynamics-nav:" + this.version;

@@ -79,6 +79,7 @@ export default class {
     }
 
     public static runImage(image: ImageConfig, serverConf: ServerConfig, callback: Function) {
+        let containerFolder = this.createContainerFolder();
         const shell = require('node-powershell');
         let ps = new shell({
             executionPolicy: "Bypass",
@@ -86,8 +87,15 @@ export default class {
         });
 
         let statusdisp = vscode.window.setStatusBarMessage('$(zap) Creating Instance..');
-        const licenseFilePath = vscode.workspace.getConfiguration().get('aldev.licenseFilePath');
-        ps.addCommand('docker run -e accept_eula=Y -e ClickOnce=Y -e LicenseFile="' + licenseFilePath + '" -m 4g -e password=' + serverConf.docker.password + ' --hostname ' + serverConf.docker.name + ' --name ' + serverConf.docker.name + ' -p 80:80 -p 8080:8080 -p 443:443 -p 7045-7049:7045-7049 -d ' + image.GetImageName());
+        ps.addCommand('docker run -e accept_eula=Y -e ClickOnce=Y '
+            + '-e LicenseFile="C:\\run\\my\\license.flf" -e useSSL=N -e ClickOnce=Y'
+            + ' -e password=' + serverConf.docker.password
+            + ' --hostname ' + serverConf.docker.name
+            + ' --name ' + serverConf.docker.name
+            + ' -v ' + containerFolder + ':c:\\run\\my'
+            + ' -p 80:80 -p 8080:8080 -p 443:443 -p 7045-7049:7045-7049 '
+            + '-m 4g -d '
+            + image.GetImageName());
         ps.invoke().
             then((output: any) => {
                 console.log(output);
@@ -102,7 +110,7 @@ export default class {
             });
     }
 
-    public static removeInstance(serverConf: ServerConfig, callback:Function) {
+    public static removeInstance(serverConf: ServerConfig, callback: Function) {
         const shell = require('node-powershell');
         let ps = new shell({
             executionPolicy: "Bypass",
@@ -140,36 +148,58 @@ export default class {
             });
     }
 
-    private static dockerUnavailableError(){
+    private static dockerUnavailableError() {
         const os = require('os');
         const opn = require('opn');
         const installDocker = 'Install Docker';
         const installAccessModule = 'Get Access';
         const changeServerAgent = 'Change to Server Agent';
-        
-        vscode.window.showErrorMessage('Docker could not be reached, please ensure that Docker is installed and running, and that the current user (' + os.userInfo().username + ') has access to run Docker instances .', 
+
+        vscode.window.showErrorMessage('Docker could not be reached, please ensure that Docker is installed and running, and that the current user (' + os.userInfo().username + ') has access to run Docker instances .',
             installDocker,
             installAccessModule,
             changeServerAgent)
-        .then((action:(string|undefined)) => {
-            console.log(action);
-            switch (action) {
-                case installDocker:
-                    opn('https://hub.docker.com/editions/community/docker-ce-desktop-windows');
-                    break;
-                case installAccessModule:
-                    opn('https://www.axians-infoma.de/techblog/allow-access-to-the-docker-engine-without-admin-rights-on-windows/');
-                    break;
-                case changeServerAgent:
-                    let agentConfig = vscode.workspace.getConfiguration('aldev');
-                    agentConfig.update('dockerAgentType', 'server');
-                    agentConfig.update('dockerAgentURL', 'http://bc.raaen.dk');
-                    opn('http://raaen.dk');
-                    break;
-            
-                default:
-                    return;
-            }
-        });
+            .then((action: (string | undefined)) => {
+                console.log(action);
+                switch (action) {
+                    case installDocker:
+                        opn('https://hub.docker.com/editions/community/docker-ce-desktop-windows');
+                        break;
+                    case installAccessModule:
+                        opn('https://www.axians-infoma.de/techblog/allow-access-to-the-docker-engine-without-admin-rights-on-windows/');
+                        break;
+                    case changeServerAgent:
+                        let agentConfig = vscode.workspace.getConfiguration('aldev');
+                        agentConfig.update('dockerAgentType', 'server');
+                        agentConfig.update('dockerAgentURL', 'http://bc.raaen.dk');
+                        opn('http://raaen.dk');
+                        break;
+
+                    default:
+                        return;
+                }
+            });
+    }
+
+    private static createContainerFolder(): (string | undefined) {
+        const fs = require('fs');
+        const mkdirp = require('mkdirp');
+        const editor = <vscode.TextEditor>vscode.window.activeTextEditor;
+        const folder = <vscode.WorkspaceFolder>vscode.workspace.getWorkspaceFolder(editor.document.uri);
+        const licenseFilePath = vscode.workspace.getConfiguration().get('aldev.licenseFilePath');
+
+        let containerPath = folder.uri.fsPath + "/.container";
+        let response = mkdirp(containerPath);
+        if (!response) {
+            console.log(folder);
+            fs.copyFile(licenseFilePath, containerPath + '/license.flf', (err: any) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        } else {
+            console.log(response);
+        }
+        return containerPath;
     }
 }
