@@ -37,7 +37,7 @@ export default class {
         });
     }
 
-    public static removeInstance(serverConf: ServerConfig) {
+    public static removeInstance(serverConf: ServerConfig, callback: Function) {
 
         let request = require('request');
         let agentURL = vscode.workspace.getConfiguration().get("aldev.dockerAgentURL", "http://localhost");
@@ -63,6 +63,8 @@ export default class {
                 vscode.window.showErrorMessage('Failed to read the content. Status code ' + response.statusCode + ' and body: ' + body);
                 return;
             }
+
+            callback();
 
         });
     }

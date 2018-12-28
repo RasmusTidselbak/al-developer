@@ -62,6 +62,35 @@
                         "type": "string",
                         "default": "",
                         "description": "Path to the default license file (.flf)"
+                    },
+                    "aldev.NAV": {
+                        "type": "object",
+                        "description": "Defines the targed version of NAV connected to the solution",
+                        "properties": {
+                            "version": {
+                                "title": "NAV Version",
+                                "type": "string",
+                                "default": "bcsandbox",
+                                "enum": [
+                                    "2018",
+                                    "bcsandbox"
+                                ],
+                                "description": "Targeted version of the solution."
+                            },
+                            "cu": {
+                                "title": "Cumulative Update",
+                                "type": "number",
+                                "maximum": 99,
+                                "description": "Targeted cumulative update of the solution."
+                            },
+                            "local": {
+                                "title": "Localization",
+                                "type": "string",
+                                "default": "",
+                                "maxLength": 2,
+                                "description": "Targeted localization of the solution."
+                            }
+                        }
                     }
                 }
             }
