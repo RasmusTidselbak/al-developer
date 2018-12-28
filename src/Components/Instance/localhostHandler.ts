@@ -86,6 +86,7 @@ export default class {
             noProfile: true
         });
 
+        const additionalParameters: string = vscode.workspace.getConfiguration().get('aldev.additionalParameters', "");
         let statusdisp = vscode.window.setStatusBarMessage('$(zap) Creating Instance..');
         ps.addCommand('docker run -e accept_eula=Y -e ClickOnce=Y '
             + '-e LicenseFile="C:\\run\\my\\license.flf" -e useSSL=N -e ClickOnce=Y'
@@ -95,6 +96,7 @@ export default class {
             + ' -v ' + containerFolder + ':c:\\run\\my'
             + ' -p 80:80 -p 8080:8080 -p 443:443 -p 7045-7049:7045-7049 '
             + '-m 4g -d '
+            + additionalParameters
             + image.GetImageName());
         ps.invoke().
             then((output: any) => {
