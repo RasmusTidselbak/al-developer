@@ -5,7 +5,6 @@ import localhostHandler from "./Instance/localhostHandler";
 
 export default class {
     public static newInstance() {
-        // The code you place here will be executed every time your command is executed
         console.log('Starting New Instance');
         let navSettings = vscode.workspace.getConfiguration('aldev.NAV');
 
