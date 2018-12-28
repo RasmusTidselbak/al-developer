@@ -12,7 +12,7 @@ export default class {
             method: "POST",
             body: {
                 "Version": serverConf.docker.NAVVersion,
-                "CU": serverConf.docker.cu,
+                "CU": "" + serverConf.docker.cu,
                 "Local": serverConf.docker.local
             },
             json: true
