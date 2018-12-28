@@ -5,6 +5,7 @@ export default class {
     public static newInstance(serverConf: ServerConfig, callback: Function) {
         let request = require('request');
         let agentURL = vscode.workspace.getConfiguration().get("aldev.dockerAgentURL", "http://localhost");
+        let statusdisp = vscode.window.setStatusBarMessage('$(zap) Creating Instance..');
         const reqOptions =
         {
             uri: agentURL + "/api/docker",
@@ -19,7 +20,8 @@ export default class {
         };
 
         request(reqOptions, function (error: any, response: any, body: any) {
-
+            
+            statusdisp.dispose();
             if (error !== undefined && error !== null) {
                 vscode.window.showErrorMessage('Failed to read the content. Error: ' + error);
                 return;
@@ -41,7 +43,7 @@ export default class {
 
         let request = require('request');
         let agentURL = vscode.workspace.getConfiguration().get("aldev.dockerAgentURL", "http://localhost");
-
+        let statusdisp = vscode.window.setStatusBarMessage('$(trashcan) Removing Instance..');
         const reqOptions =
         {
             uri: agentURL + "/api/docker",
@@ -55,6 +57,7 @@ export default class {
 
         request(reqOptions, function (error: any, response: any, body: any) {
 
+            statusdisp.dispose();
             if (error !== undefined && error !== null) {
                 vscode.window.showErrorMessage('Failed to read the content. Error: ' + error);
                 return;
@@ -63,7 +66,7 @@ export default class {
                 vscode.window.showErrorMessage('Failed to read the content. Status code ' + response.statusCode + ' and body: ' + body);
                 return;
             }
-
+            
             callback();
 
         });
