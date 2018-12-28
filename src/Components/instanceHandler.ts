@@ -20,7 +20,7 @@ export default class {
             case 'localhost':
                 localhostHandler.newInstance(dockerConf, replaceLaunchConfig);
                 break;
-            case 'server':
+            case 'Cloud':
                 httpHandler.newInstance(dockerConf, replaceLaunchConfig);
                 break;
         }
@@ -50,7 +50,7 @@ export default class {
             case 'localhost':
                 localhostHandler.removeInstance(dockerConf, removeLaunchConfig);
                 break;
-            case 'server':
+            case 'Cloud':
                 httpHandler.removeInstance(dockerConf, removeLaunchConfig);
                 break;
         }

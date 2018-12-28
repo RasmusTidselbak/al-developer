@@ -48,7 +48,7 @@
                         "type": "string",
                         "enum": [
                             "localhost",
-                            "server"
+                            "Cloud"
                         ],
                         "default": "localhost",
                         "description": "Defines which type of Docker installation is used."

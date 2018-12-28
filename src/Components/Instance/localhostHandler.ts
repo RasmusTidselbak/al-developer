@@ -153,12 +153,12 @@ export default class {
         const opn = require('opn');
         const installDocker = 'Install Docker';
         const installAccessModule = 'Get Access';
-        const changeServerAgent = 'Change to Server Agent';
+        const changeToCloud = 'Change to Server Agent';
 
         vscode.window.showErrorMessage('Docker could not be reached, please ensure that Docker is installed and running, and that the current user (' + os.userInfo().username + ') has access to run Docker instances .',
             installDocker,
             installAccessModule,
-            changeServerAgent)
+            changeToCloud)
             .then((action: (string | undefined)) => {
                 console.log(action);
                 switch (action) {
@@ -168,9 +168,9 @@ export default class {
                     case installAccessModule:
                         opn('https://www.axians-infoma.de/techblog/allow-access-to-the-docker-engine-without-admin-rights-on-windows/');
                         break;
-                    case changeServerAgent:
+                    case changeToCloud:
                         let agentConfig = vscode.workspace.getConfiguration('aldev');
-                        agentConfig.update('dockerAgentType', 'server');
+                        agentConfig.update('dockerAgentType', 'Cloud');
                         agentConfig.update('dockerAgentURL', 'http://bc.raaen.dk');
                         opn('http://raaen.dk');
                         break;
