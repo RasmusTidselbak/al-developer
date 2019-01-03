@@ -23,7 +23,7 @@ export default class{
             tagBegan = true;
         }
 
-        if(this.cu !== "" && this.cu !== undefined){
+        if(this.cu !== "" && this.cu !== undefined && this.cu !== "0"){
             imageName += tagBegan ? "-" : ":";
             imageName += "cu" + this.cu;
 

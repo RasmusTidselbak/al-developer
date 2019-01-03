@@ -63,7 +63,7 @@ export default class {
             noProfile: true
         });
 
-        let statusdisp = vscode.window.setStatusBarMessage('$(cloud-download) Pulling Instance..');
+        let statusdisp = vscode.window.setStatusBarMessage('$(cloud-download) Pulling Image..');
         vscode.window.showInformationMessage('Pulling image ' + image.GetImageName());
         ps.addCommand('docker pull ' + image.GetImageName() + ' | Out-Null');
         ps.invoke()
@@ -165,16 +165,16 @@ export default class {
                 console.log(action);
                 switch (action) {
                     case installDocker:
-                        opn('https://hub.docker.com/editions/community/docker-ce-desktop-windows');
+                        opn('http://aldevops.com/?p=27');
                         break;
                     case installAccessModule:
-                        opn('https://www.axians-infoma.de/techblog/allow-access-to-the-docker-engine-without-admin-rights-on-windows/');
+                        opn('http://aldevops.com/?p=25');
                         break;
                     case changeToCloud:
                         let agentConfig = vscode.workspace.getConfiguration('aldev');
                         agentConfig.update('dockerAgentType', 'Cloud');
-                        agentConfig.update('dockerAgentURL', 'http://bc.raaen.dk');
-                        opn('http://raaen.dk');
+                        agentConfig.update('dockerAgentURL', 'http://bc.aldevops.com');
+                        opn('http://aldevops.com');
                         break;
 
                     default:
@@ -203,5 +203,22 @@ export default class {
             console.log(response);
         }
         return containerPath;
+    }
+
+    public static getInstanceStatus(serverConf: ServerConfig, callback: Function) {
+        const shell = require('node-powershell');
+        let ps = new shell({
+            executionPolicy: "Bypass",
+            noProfile: true
+        });
+
+        ps.addCommand('docker ps -af name=' + serverConf.docker.name + ' --format "{{.Status}}"');
+        ps.invoke()
+            .then((output: any) => {
+                callback(output);
+            })
+            .catch((err: any) => {
+                console.log(err);
+            });
     }
 }

@@ -2,7 +2,7 @@
     "name": "al-dev",
     "displayName": "AL Developer",
     "description": "AL Developer Helper",
-    "version": "1.3.2",
+    "version": "1.3.6",
     "publisher": "rasmus",
     "icon": "images/logo128.png",
     "engines": {
@@ -19,7 +19,8 @@
         "onCommand:aldev.newInstance",
         "onCommand:aldev.removeInstance",
         "onCommand:aldev.updateAppManifest",
-        "onCommand:aldev.copyPassword"
+        "onCommand:aldev.copyPassword",
+        "onLanguage:al"
     ],
     "main": "./out/extension",
     "contributes": {
@@ -63,38 +64,6 @@
                         "type": "string",
                         "default": "",
                         "description": "Path to the default license file (.flf)"
-                    },
-                    "aldev.NAV": {
-                        "type": "object",
-                        "description": "Defines the targed version of NAV connected to the solution",
-                        "properties": {
-                            "version": {
-                                "title": "NAV Version",
-                                "type": "string",
-                                "default": "BC",
-                                "enum": [
-                                    "BC",
-                                    "2018",
-                                    "2017",
-                                    "2016",
-                                    "2015"
-                                ],
-                                "description": "Targeted version of the solution."
-                            },
-                            "cu": {
-                                "title": "Cumulative Update",
-                                "type": "number",
-                                "maximum": 99,
-                                "description": "Targeted cumulative update of the solution."
-                            },
-                            "local": {
-                                "title": "Localization",
-                                "type": "string",
-                                "default": "",
-                                "maxLength": 2,
-                                "description": "Targeted localization of the solution."
-                            }
-                        }
                     },
                     "aldev.additionalParameters": {
                         "type": "string",

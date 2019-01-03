@@ -12,7 +12,7 @@ export default class {
             method: "POST",
             body: {
                 "Version": serverConf.docker.NAVVersion,
-                "CU": "" + serverConf.docker.cu,
+                "CU": "" + serverConf.docker.cu ? serverConf.docker.cu : 0,
                 "Local": serverConf.docker.local
             },
             json: true
@@ -68,6 +68,31 @@ export default class {
             }
             
             callback();
+
+        });
+    }
+
+    public static getInstanceStatus(serverConf: ServerConfig, callback: Function){
+        let request = require('request');
+        let agentURL = vscode.workspace.getConfiguration().get("aldev.dockerAgentURL", "http://localhost");
+        const reqOptions =
+        {
+            uri: agentURL + "/api/docker/" + serverConf.docker.name,
+            method: "GET",
+            json: true
+
+        };
+
+        request(reqOptions, function (error: any, response: any, body: any) {
+            if (error !== undefined && error !== null) {
+                vscode.window.showErrorMessage('Failed to read the content. Error: ' + error);
+                return;
+            }
+            if (response.statusCode !== 200) {
+                vscode.window.showErrorMessage('Failed to read the content. Status code ' + response.statusCode + ' and body: ' + body);
+                return;
+            }
+            callback(body.status);
 
         });
     }

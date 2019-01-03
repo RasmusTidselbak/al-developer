@@ -2,18 +2,19 @@ import * as vscode from "vscode";
 import { ServerConfigMethods as sc, ServerConfig } from "../Models/ServerConfig";
 import httpHandler from "./Instance/httpHandler";
 import localhostHandler from "./Instance/localhostHandler";
+import { SettingsFile } from "../Models/Settings";
 
 export default class {
     public static newInstance() {
         console.log('Starting New Instance');
-        let navSettings = vscode.workspace.getConfiguration('aldev.NAV');
+        let navSettings = SettingsFile.getSettings();
 
         let dockerConf: ServerConfig = sc.defaultDockerConfig();
 
-        dockerConf.docker.NAVVersion = navSettings.get("version", "bcsandbox");
-        dockerConf.docker.cu = navSettings.get("cu", "");
-        dockerConf.docker.local = navSettings.get("local", "");    
-        
+        dockerConf.docker.NAVVersion = navSettings.getVersion();
+        dockerConf.docker.cu = navSettings.getCU();
+        dockerConf.docker.local = navSettings.getLocal();
+
 
         const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
         switch (dockerAgentType) {
@@ -39,7 +40,7 @@ export default class {
         });
 
         let dockerConf: ServerConfig;
-        if (confObj !== undefined) {
+        if (confObj) {
             dockerConf = confObj;
         } else {
             return;
@@ -55,7 +56,7 @@ export default class {
                 break;
         }
 
-        
+
     }
 
     public static copyPassword() {
@@ -74,27 +75,52 @@ export default class {
             }
         });
     }
-}
 
-
-function replaceLaunchConfig(dockerConf: ServerConfig){
+    public static getInstanceStatus() {
         const editor: any = vscode.window.activeTextEditor;
         const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
         let serverConfigs = <ServerConfig[]>config.get('configurations');
-        serverConfigs.forEach(function (sc: any, index: number, object: any) {
-            if (sc.name === "docker") {
-                serverConfigs.splice(index, 1);
+
+        serverConfigs.forEach(conf => {
+            if (conf.name === "docker") {
+                
+                const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
+                switch (dockerAgentType) {
+                    case 'localhost':
+                        localhostHandler.getInstanceStatus(conf, showInstanceStatus);
+                        break;
+                    case 'Cloud':
+                        httpHandler.getInstanceStatus(conf, showInstanceStatus);
+                        break;
+                }
             }
         });
-
-        serverConfigs.push(dockerConf);
-        config.update('configurations', serverConfigs);
-
-
-        vscode.commands.executeCommand('aldev.copyPassword');
+    }
 }
 
-function removeLaunchConfig(){
+function showInstanceStatus(status: string, imageName: string){
+
+    vscode.window.setStatusBarMessage("$(zap) Instance: " + status);
+}
+
+function replaceLaunchConfig(dockerConf: ServerConfig) {
+    const editor: any = vscode.window.activeTextEditor;
+    const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
+    let serverConfigs = <ServerConfig[]>config.get('configurations');
+    serverConfigs.forEach(function (sc: any, index: number, object: any) {
+        if (sc.name === "docker") {
+            serverConfigs.splice(index, 1);
+        }
+    });
+
+    serverConfigs.push(dockerConf);
+    config.update('configurations', serverConfigs);
+
+
+    vscode.commands.executeCommand('aldev.copyPassword');
+}
+
+function removeLaunchConfig() {
     const editor: any = vscode.window.activeTextEditor;
     const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
     let serverConfigs = <ServerConfig[]>config.get('configurations');
