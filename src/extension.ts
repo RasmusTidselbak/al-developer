@@ -17,6 +17,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     let copyDisp = vscode.commands.registerCommand('aldev.copyPassword', ih.copyPassword);
     context.subscriptions.push(copyDisp);
+
+    context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(ih.getInstanceStatus));
 }
 
 export function deactivate() {
