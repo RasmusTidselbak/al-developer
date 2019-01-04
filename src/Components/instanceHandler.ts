@@ -5,6 +5,8 @@ import localhostHandler from "./Instance/localhostHandler";
 import { SettingsFile } from "../Models/Settings";
 
 export default class {
+    private static statusBarDisp: vscode.Disposable;
+
     public static newInstance() {
         console.log('Starting New Instance');
         let navSettings = SettingsFile.getSettings();
@@ -17,6 +19,7 @@ export default class {
 
 
         const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
+        this.statusBarDisp.dispose();
         switch (dockerAgentType) {
             case 'localhost':
                 localhostHandler.newInstance(dockerConf, replaceLaunchConfig);
@@ -47,6 +50,7 @@ export default class {
         }
 
         const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
+        this.statusBarDisp.dispose();
         switch (dockerAgentType) {
             case 'localhost':
                 localhostHandler.removeInstance(dockerConf, removeLaunchConfig);
@@ -87,21 +91,22 @@ export default class {
                 const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
                 switch (dockerAgentType) {
                     case 'localhost':
-                        localhostHandler.getInstanceStatus(conf, showInstanceStatus);
+                        localhostHandler.getInstanceStatus(conf, this.showInstanceStatus);
                         break;
                     case 'Cloud':
-                        httpHandler.getInstanceStatus(conf, showInstanceStatus);
+                        httpHandler.getInstanceStatus(conf, this.showInstanceStatus);
                         break;
                 }
             }
         });
     }
+
+    private static showInstanceStatus(status: string){
+    
+        this.statusBarDisp = vscode.window.setStatusBarMessage("$(zap) Instance: " + status);
+    }
 }
 
-function showInstanceStatus(status: string, imageName: string){
-
-    vscode.window.setStatusBarMessage("$(zap) Instance: " + status);
-}
 
 function replaceLaunchConfig(dockerConf: ServerConfig) {
     const editor: any = vscode.window.activeTextEditor;
@@ -123,6 +128,8 @@ function replaceLaunchConfig(dockerConf: ServerConfig) {
 function removeLaunchConfig() {
     const editor: any = vscode.window.activeTextEditor;
     const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
+    
+    
     let serverConfigs = <ServerConfig[]>config.get('configurations');
     serverConfigs.forEach(function (sc: any, index: number, object: any) {
         if (sc.name === "docker") {
