@@ -1,31 +1,19 @@
 import { TestConfig } from "./TestConfig";
 import * as vscode from "vscode";
 
-export class SettingsFile {
-    public name: string = "UNKNOWN";
-    public version?: string;
-    public cu?: string;
-    public local?: string;
-    public tests?: TestConfig[];
+export interface SettingsFile {
+    name?: string;
+    version?: string;
+    cu?: string;
+    local?: string;
+    tests?: TestConfig[];
 
-    public getName(): string {
-        return this.name ? this.name : "UNKNOWN";
-    }
+}
 
-    public getVersion(): string {
-        return this.version ? this.version : "BC";
-    }
-
-    public getCU(): string {
-        return this.cu ? this.cu : "";
-    }
-
-    public getLocal(): string {
-        return this.local ? this.local : "";
-    }
+export class SettingsMethods {
 
     public static defaultSettings(): SettingsFile {
-        let settingsFile = new SettingsFile();
+        let settingsFile: SettingsFile = {};
         let tests: TestConfig[] = [{
             test: "unittests",
             type: "Codeunit",
@@ -35,8 +23,8 @@ export class SettingsFile {
         }];
 
         settingsFile.name = "UNKNOWN";
-        settingsFile.version = "BC";
-        settingsFile.local = "dk";
+        // settingsFile.version = "BC";
+        // settingsFile.local = "dk";
         settingsFile.tests = tests;
 
         return settingsFile;
@@ -44,13 +32,72 @@ export class SettingsFile {
 
     public static getSettings(): SettingsFile {
         let fs = require('fs');
+        let settingsPath: string | undefined = this.settingsFolder();
+
+
+        if (!settingsPath) {
+            return this.defaultSettings();
+        }
+
+        let rawdata: any = fs.readFileSync(settingsPath);
+        try {
+            let jsonData:SettingsFile = JSON.parse(rawdata);
+            return jsonData;
+        } catch (error) {
+            console.log(error);
+            vscode.window.showErrorMessage("Could not read settingsfile, got the following error: " + error);
+            throw error;
+        }
+    }
+
+    static async validateSettings(_settings: SettingsFile) {
+        if (!_settings.version) {
+            await this.pickVersion().then((value) => {
+                _settings.version = value ? value : "";
+            });
+            if (!_settings.cu) {
+                await this.pickCU().then((value) => {
+                    _settings.cu = value ? value : "";
+                });
+            }
+            if (!_settings.local) {
+                await this.pickLocal().then((value) => {
+                    _settings.local = value ? value : "";
+                });
+            }
+        }
+    }
+
+    static async pickVersion(): Promise<string | undefined> {
+        const result = await vscode.window.showQuickPick(['BC', '2018'], {
+            placeHolder: 'Pick a version',
+        });
+        return result;
+    }
+    static async pickCU(): Promise<string | undefined> {
+        const result = await vscode.window.showInputBox({ placeHolder: "Pick a cumulative update" });
+        return result;
+    }
+    static async pickLocal(): Promise<string | undefined> {
+        const result = await vscode.window.showQuickPick(['DK', 'DE'], {
+            placeHolder: 'Pick a localization',
+        });
+        return result;
+    }
+
+    static settingsFolder(): string | undefined {
+        const fs = require('fs');
         let settingsPath: string;
         let folderPath: string;
 
         const editor = <vscode.TextEditor>vscode.window.activeTextEditor;
         if (editor) {
             const folder = <vscode.WorkspaceFolder>vscode.workspace.getWorkspaceFolder(editor.document.uri);
-            folderPath = folder.uri.fsPath;
+            if (folder) {
+                folderPath = folder.uri.fsPath;
+            } else {
+                folderPath = require('path').dirname(editor.document.uri.fsPath);
+            }
         } else {
             folderPath = "C:\\Users\\raa\\Documents\\Development\\NAV\\TopCoder\\TopCoder\\test";
         }
@@ -59,32 +106,31 @@ export class SettingsFile {
         if (!fs.existsSync(settingsPath)) {
             settingsPath = folderPath + '/../settings.json';
             if (!fs.existsSync(settingsPath)) {
-                return this.defaultSettings();
+                return undefined;
             }
+        }
+        return settingsPath;
+    }
+
+    static async saveSettings(settingsFile: SettingsFile) {
+        const fs = require('fs');
+        let settingsPath: string | undefined = this.settingsFolder();
+
+        if (!settingsPath) {
+            return;
         }
 
         let rawdata: any = fs.readFileSync(settingsPath);
-        let settingsFile = new SettingsFile();
-        JSON.parse(rawdata, (key, value) => {
-            switch (key) {
-                case 'name':
-                    settingsFile.name = value ? value : "";
-                    break;
+        let _settings = JSON.parse(rawdata);
+        _settings.version = settingsFile.version;
+        if (settingsFile.cu) {
+            _settings.cu = settingsFile.cu;
+        }
 
-                case 'cu':
-                    settingsFile.cu = value ? value : "";
-                    break;
-                case 'local':
-                    settingsFile.local = value ? value : "";
-                    break;
-                case 'version':
-                    settingsFile.version = value ? value : "";
-                    break;
-                default:
-                    break;
-            }
-        });
+        if (settingsFile.local) {
+            _settings.local = settingsFile.local;
+        }
 
-        return settingsFile;
+        fs.writeFileSync(settingsPath, JSON.stringify(_settings, null, 2));
     }
 }

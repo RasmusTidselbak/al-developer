@@ -1,6 +1,6 @@
 import * as assert from "assert";
 import ImageConfig from "../Models/ImageConfig";
-import { SettingsFile } from "../Models/Settings";
+// import { SettingsMethods } from "../Models/Settings";
 
 suite('ImageConfig', () => {
     test('GetImageName()', () => {
@@ -21,9 +21,6 @@ suite('ImageConfig', () => {
 
 suite('SettingsFile', () => {
     test('DefaultSettings()', () => {
-        let navSettings = SettingsFile.getSettings();
-        navSettings.getVersion();
-        navSettings.getCU();
-        navSettings.getLocal();
+        // let navSettings = SettingsMethods.getSettings();
     });
 });

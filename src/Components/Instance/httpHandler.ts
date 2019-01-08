@@ -12,8 +12,8 @@ export default class {
             method: "POST",
             body: {
                 "Version": serverConf.docker.NAVVersion,
-                "CU": "" + serverConf.docker.cu ? serverConf.docker.cu : 0,
-                "Local": serverConf.docker.local
+                "CU": serverConf.docker.cu ? "" + serverConf.docker.cu : "0",
+                "Local": serverConf.docker.local ? serverConf.docker.local: "w1"
             },
             json: true
 

@@ -2,30 +2,32 @@ import * as vscode from "vscode";
 import { ServerConfigMethods as sc, ServerConfig } from "../Models/ServerConfig";
 import httpHandler from "./Instance/httpHandler";
 import localhostHandler from "./Instance/localhostHandler";
-import { SettingsFile } from "../Models/Settings";
+import { SettingsMethods } from "../Models/Settings";
 
 export default class {
     public static newInstance() {
         console.log('Starting New Instance');
-        let navSettings = SettingsFile.getSettings();
+        let navSettings = SettingsMethods.getSettings();
+        SettingsMethods.validateSettings(navSettings).then(() => {
+            SettingsMethods.saveSettings(navSettings);
+            let dockerConf: ServerConfig = sc.defaultDockerConfig();
 
-        let dockerConf: ServerConfig = sc.defaultDockerConfig();
-
-        dockerConf.docker.NAVVersion = navSettings.getVersion();
-        dockerConf.docker.cu = navSettings.getCU();
-        dockerConf.docker.local = navSettings.getLocal();
+            dockerConf.docker.NAVVersion = navSettings.version ? navSettings.version : "";
+            dockerConf.docker.cu = navSettings.cu;
+            dockerConf.docker.local = navSettings.local;
 
 
-        const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
+            const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
 
-        switch (dockerAgentType) {
-            case 'localhost':
-                localhostHandler.newInstance(dockerConf, replaceLaunchConfig);
-                break;
-            case 'Cloud':
-                httpHandler.newInstance(dockerConf, replaceLaunchConfig);
-                break;
-        }
+            switch (dockerAgentType) {
+                case 'localhost':
+                    localhostHandler.newInstance(dockerConf, replaceLaunchConfig);
+                    break;
+                case 'Cloud':
+                    httpHandler.newInstance(dockerConf, replaceLaunchConfig);
+                    break;
+            }
+        });
 
     }
 
