@@ -28,6 +28,9 @@ export class ServerConfigMethods {
                 local: "dk",
                 username: "admin",
                 password: "",
+                clickonce: "",
+                webclient: "",
+                sqlconnection: ""
             }
 
         };

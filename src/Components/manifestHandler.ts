@@ -18,7 +18,7 @@ export default function (): any {
     let rawdata: any = fs.readFileSync(mainAppPath);
     let mainAppFile = JSON.parse(rawdata);
 
-    if (mainAppFile.id === "<APP ID>") {
+    if (mainAppFile.id === "<APP ID>" || mainAppFile.id === "<app id>") {
         mainAppFile.id = ManifestHandler.createGUID();
         storeChanges = true;
 
@@ -28,13 +28,15 @@ export default function (): any {
     rawdata = fs.readFileSync(testAppPath);
     let testAppFile = JSON.parse(rawdata);
 
-    if (testAppFile.id === "<APP ID>") {
+    if (testAppFile.id === "<APP ID>" ||mainAppFile.id === "<test app id>") {
         testAppFile.id = ManifestHandler.createGUID();
+        testAppFile.name = mainAppFile.name + " test";
+        testAppFile.publisher = mainAppFile.publisher;
         storeChanges = true;
     }
 
     testAppFile.dependencies.forEach((dependency: any) => {
-        if ((dependency.appId === "<APP ID>") || (dependency.appId === mainAppFile.id)) {
+        if ((dependency.appId === "<APP ID>" ||dependency.appId === "<app id>") || (dependency.appId === mainAppFile.id)) {
             storeChanges = true;
             dependency.appId = mainAppFile.id;
             dependency.name = mainAppFile.name;
