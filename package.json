@@ -2,7 +2,7 @@
     "name": "al-dev",
     "displayName": "AL Developer",
     "description": "AL Developer Helper",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "publisher": "rasmus",
     "icon": "images/logo128.png",
     "engines": {

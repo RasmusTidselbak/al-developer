@@ -3,6 +3,7 @@ import { ServerConfigMethods as sc, ServerConfig } from "../Models/ServerConfig"
 import httpHandler from "./Instance/httpHandler";
 import localhostHandler from "./Instance/localhostHandler";
 import { SettingsMethods } from "../Models/Settings";
+import * as fs from 'fs';
 
 export default class {
     public static newInstance() {
@@ -76,7 +77,12 @@ export default class {
                     });
                 }
             }
+            replaceLaunchConfig(conf);
         });
+
+
+
+
     }
 
     public static getInstanceStatus() {
@@ -107,20 +113,34 @@ export default class {
 
 
 function replaceLaunchConfig(dockerConf: ServerConfig) {
-    const editor: any = vscode.window.activeTextEditor;
-    const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
-    let serverConfigs = <ServerConfig[]>config.get('configurations');
-    serverConfigs.forEach(function (sc: any, index: number, object: any) {
-        if (sc.name === "docker") {
-            serverConfigs.splice(index, 1);
-        }
+    let paths: string[] = [
+        vscode.workspace.rootPath + "\\..\\app\\.vscode\\launch.json",
+        vscode.workspace.rootPath + "\\..\\test\\.vscode\\launch.json"];
+
+
+    paths.forEach(path => {
+        let rawdata: any = fs.readFileSync(path);
+        let launchFile = JSON.parse(rawdata);
+        let serverConfigs = <ServerConfig[]>launchFile.configurations;
+        serverConfigs.forEach(function (sc: ServerConfig, index: number, object: any) {
+            if (sc.name === "docker") {
+                if (sc.startupObjectId) {
+                    dockerConf.startupObjectId = sc.startupObjectId;
+                }
+                serverConfigs.splice(index, 1);
+            }
+
+            if (sc.startupObjectId && !dockerConf.startupObjectId) {
+                dockerConf.startupObjectId = sc.startupObjectId;
+            }
+        });
+
+        serverConfigs.push(dockerConf);
+        launchFile.configurations = serverConfigs;
+        fs.writeFileSync(path, JSON.stringify(launchFile, null, 2));
     });
 
-    serverConfigs.push(dockerConf);
-    config.update('configurations', serverConfigs);
-
-
-    vscode.commands.executeCommand('aldev.copyPassword');
+    // vscode.commands.executeCommand('aldev.copyPassword');
 }
 
 function removeLaunchConfig() {
