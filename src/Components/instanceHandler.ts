@@ -96,18 +96,18 @@ export default class {
                 const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
                 switch (dockerAgentType) {
                     case 'localhost':
-                        localhostHandler.getInstanceStatus(conf, this.showInstanceStatus);
+                        localhostHandler.getInstanceStatus(conf, (status: string) => {
+                            vscode.window.setStatusBarMessage("$(zap) Instance: " + status);
+                        });
                         break;
                     case 'Cloud':
-                        httpHandler.getInstanceStatus(conf, this.showInstanceStatus);
+                        httpHandler.getInstanceStatus(conf, (status: string) => {
+                            vscode.window.setStatusBarMessage("$(zap) Instance: " + status);
+                        });
                         break;
                 }
             }
         });
-    }
-
-    private static showInstanceStatus(status: string) {
-        vscode.window.setStatusBarMessage("$(zap) Instance: " + status);
     }
 }
 
