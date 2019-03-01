@@ -11,8 +11,17 @@ class ManifestHandler{
 
 export default function (): any {
 
-    let mainAppPath = vscode.workspace.rootPath + "\\..\\app\\app.json";
-    let testAppPath = vscode.workspace.rootPath + "\\..\\test\\app.json";
+    let mainAppPath: string = vscode.workspace.rootPath + "\\..\\app\\app.json";
+    let testAppPath: string = vscode.workspace.rootPath + "\\..\\test\\app.json";
+    // TODO: Hvis vi har åbnet projektet i roden af git, så ligger de et andet sted
+    if (!fs.existsSync(mainAppPath)) {
+        mainAppPath = vscode.workspace.rootPath + "\\app\\app.json";
+    } 
+
+    if (!fs.existsSync(testAppPath)) {
+        testAppPath = vscode.workspace.rootPath + "\\test\\app.json";
+    }
+
     let storeChanges: boolean = false;
 
     let rawdata: any = fs.readFileSync(mainAppPath);

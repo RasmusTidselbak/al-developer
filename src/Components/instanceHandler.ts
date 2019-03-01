@@ -114,6 +114,7 @@ export default class {
 
 function replaceLaunchConfig(dockerConf: ServerConfig) {
     let paths: string[] = [
+        vscode.workspace.rootPath + "\\.vscode\\launch.json",
         vscode.workspace.rootPath + "\\..\\app\\.vscode\\launch.json",
         vscode.workspace.rootPath + "\\..\\test\\.vscode\\launch.json"];
 
