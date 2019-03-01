@@ -120,25 +120,28 @@ function replaceLaunchConfig(dockerConf: ServerConfig) {
 
 
     paths.forEach(path => {
-        let rawdata: any = fs.readFileSync(path);
-        let launchFile = JSON.parse(rawdata);
-        let serverConfigs = <ServerConfig[]>launchFile.configurations;
-        serverConfigs.forEach(function (sc: ServerConfig, index: number, object: any) {
-            if (sc.name === "docker") {
-                if (sc.startupObjectId) {
+        if (fs.existsSync(path)) {
+
+            let rawdata: any = fs.readFileSync(path);
+            let launchFile = JSON.parse(rawdata);
+            let serverConfigs = <ServerConfig[]>launchFile.configurations;
+            serverConfigs.forEach(function (sc: ServerConfig, index: number, object: any) {
+                if (sc.name === "docker") {
+                    if (sc.startupObjectId) {
+                        dockerConf.startupObjectId = sc.startupObjectId;
+                    }
+                    serverConfigs.splice(index, 1);
+                }
+
+                if (sc.startupObjectId && !dockerConf.startupObjectId) {
                     dockerConf.startupObjectId = sc.startupObjectId;
                 }
-                serverConfigs.splice(index, 1);
-            }
+            });
 
-            if (sc.startupObjectId && !dockerConf.startupObjectId) {
-                dockerConf.startupObjectId = sc.startupObjectId;
-            }
-        });
-
-        serverConfigs.push(dockerConf);
-        launchFile.configurations = serverConfigs;
-        fs.writeFileSync(path, JSON.stringify(launchFile, null, 2));
+            serverConfigs.push(dockerConf);
+            launchFile.configurations = serverConfigs;
+            fs.writeFileSync(path, JSON.stringify(launchFile, null, 2));
+        }
     });
 
     // vscode.commands.executeCommand('aldev.copyPassword');

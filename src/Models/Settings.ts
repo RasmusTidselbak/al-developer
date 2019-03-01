@@ -88,19 +88,7 @@ export class SettingsMethods {
     static settingsFolder(): string | undefined {
         const fs = require('fs');
         let settingsPath: string;
-        let folderPath: string;
-
-        const editor = <vscode.TextEditor>vscode.window.activeTextEditor;
-        if (editor) {
-            const folder = <vscode.WorkspaceFolder>vscode.workspace.getWorkspaceFolder(editor.document.uri);
-            if (folder) {
-                folderPath = folder.uri.fsPath;
-            } else {
-                folderPath = require('path').dirname(editor.document.uri.fsPath);
-            }
-        } else {
-            folderPath = "C:\\Users\\raa\\Documents\\Development\\NAV\\TopCoder\\TopCoder\\test";
-        }
+        let folderPath: string = this.getRootFolderPath();
         settingsPath = folderPath + '/settings.json';
 
         if (!fs.existsSync(settingsPath)) {
@@ -112,25 +100,44 @@ export class SettingsMethods {
         return settingsPath;
     }
 
+    static defaultSettingsPath(): string {
+        let rootFolder = this.getRootFolderPath();
+        return rootFolder + '/settings.json';
+    }
+
+    static getRootFolderPath(): string {
+        const editor = <vscode.TextEditor>vscode.window.activeTextEditor;
+        if (editor) {
+            const folder = <vscode.WorkspaceFolder>vscode.workspace.getWorkspaceFolder(editor.document.uri);
+            if (folder) {
+                return folder.uri.fsPath;
+            } else {
+                return require('path').dirname(editor.document.uri.fsPath);
+            }
+        } else {
+            return "C:\\Users\\raa\\Documents\\Development\\NAV\\TopCoder\\TopCoder\\test";
+        }
+    }
+
     static async saveSettings(settingsFile: SettingsFile) {
         const fs = require('fs');
         let settingsPath: string | undefined = this.settingsFolder();
 
-        if (!settingsPath) {
-            return;
+        if (fs.existsSync(settingsPath)) {
+            let rawdata: any = fs.readFileSync(settingsPath);
+            let _settings = JSON.parse(rawdata);
+            _settings.version = settingsFile.version;
+            if (settingsFile.cu) {
+                _settings.cu = settingsFile.cu;
+            }
+    
+            if (settingsFile.local) {
+                _settings.local = settingsFile.local;
+            }
+    
+            fs.writeFileSync(settingsPath, JSON.stringify(_settings, null, 2));
+        } else {
+            fs.writeFileSync(this.defaultSettingsPath(), JSON.stringify(settingsFile, null, 2));
         }
-
-        let rawdata: any = fs.readFileSync(settingsPath);
-        let _settings = JSON.parse(rawdata);
-        _settings.version = settingsFile.version;
-        if (settingsFile.cu) {
-            _settings.cu = settingsFile.cu;
-        }
-
-        if (settingsFile.local) {
-            _settings.local = settingsFile.local;
-        }
-
-        fs.writeFileSync(settingsPath, JSON.stringify(_settings, null, 2));
     }
 }
