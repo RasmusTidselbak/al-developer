@@ -9,5 +9,6 @@ export default interface DockerConfig {
     clickonce: string;
     sqlconnection: string;
     webclient: string;
+    owner?: string;
 
 }

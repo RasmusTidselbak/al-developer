@@ -2,7 +2,7 @@
     "name": "al-dev",
     "displayName": "AL Developer",
     "description": "AL Developer Helper",
-    "version": "1.5.1",
+    "version": "1.6.0",
     "publisher": "rasmus",
     "icon": "images/logo128.png",
     "engines": {
@@ -18,6 +18,7 @@
     "activationEvents": [
         "onCommand:aldev.newInstance",
         "onCommand:aldev.removeInstance",
+        "onCommand:aldev.startInstance",
         "onCommand:aldev.updateAppManifest",
         "onCommand:aldev.copyPassword",
         "onLanguage:al"
@@ -28,6 +29,10 @@
             {
                 "command": "aldev.newInstance",
                 "title": "AL Dev: New Instance"
+            },
+            {
+                "command": "aldev.startInstance",
+                "title": "AL Dev: Start Instance"
             },
             {
                 "command": "aldev.removeInstance",
@@ -69,6 +74,11 @@
                         "type": "string",
                         "default": "",
                         "description": "Additional parameters for the local Docker instances."
+                    },
+                    "aldev.cloudInstance" : {
+                        "type": "string",
+                        "default": "",
+                        "description": "Instance key for the docker environment (required for Cloud agents)"
                     }
                 }
             }

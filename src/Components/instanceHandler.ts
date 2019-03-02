@@ -16,7 +16,7 @@ export default class {
             dockerConf.docker.NAVVersion = navSettings.version ? navSettings.version : "";
             dockerConf.docker.cu = navSettings.cu;
             dockerConf.docker.local = navSettings.local;
-
+            dockerConf.docker.owner = vscode.workspace.getConfiguration().get('aldev.cloudInstance');
 
             const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
 
@@ -29,6 +29,40 @@ export default class {
                     break;
             }
         });
+
+    }
+
+    public static startInstance() {
+        console.log('Starting Instance');
+
+        const editor: any = vscode.window.activeTextEditor;
+        const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
+
+        let serverConfigs = <ServerConfig[]>config.get('configurations');
+        let confObj: any = serverConfigs.find(obj => {
+            return obj.name === "docker";
+        });
+
+        let dockerConf: ServerConfig;
+        if (confObj) {
+            dockerConf = confObj;
+        } else {
+            return;
+        }
+
+        const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
+        switch (dockerAgentType) {
+            case 'localhost':
+                vscode.window.showErrorMessage('Not implemented for local environments');
+                // localhostHandler.startInstance(dockerConf, removeLaunchConfig);
+                break;
+            case 'Cloud':
+                httpHandler.startInstance(dockerConf,  (status: string) => {
+                    vscode.window.setStatusBarMessage("$(zap) Instance: Starting");
+                });
+                break;
+        }
+
 
     }
 
