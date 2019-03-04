@@ -16,7 +16,7 @@ export default class {
             dockerConf.docker.NAVVersion = navSettings.version ? navSettings.version : "";
             dockerConf.docker.cu = navSettings.cu;
             dockerConf.docker.local = navSettings.local;
-            dockerConf.docker.owner = vscode.workspace.getConfiguration().get('aldev.cloudInstance');
+            dockerConf.docker.owner = vscode.workspace.getConfiguration().get('aldev.cloudKey');
 
             const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
 

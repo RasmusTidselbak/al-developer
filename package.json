@@ -2,7 +2,7 @@
     "name": "al-dev",
     "displayName": "AL Developer",
     "description": "AL Developer Helper",
-    "version": "1.6.0",
+    "version": "1.6.1",
     "publisher": "rasmus",
     "icon": "images/logo128.png",
     "engines": {
@@ -75,7 +75,7 @@
                         "default": "",
                         "description": "Additional parameters for the local Docker instances."
                     },
-                    "aldev.cloudInstance" : {
+                    "aldev.cloudKey" : {
                         "type": "string",
                         "default": "",
                         "description": "Instance key for the docker environment (required for Cloud agents)"
