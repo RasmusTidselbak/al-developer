@@ -45,7 +45,7 @@ export default class {
     }
 
 
-    public static startInstance(serverConf: ServerConfig, callback: Function) {
+    public static startInstance(action: string, serverConf: ServerConfig, callback: Function) {
 
         let request = require('request');
         let agentURL = vscode.workspace.getConfiguration().get("aldev.dockerAgentURL", "http://localhost");
@@ -56,7 +56,7 @@ export default class {
             method: "POST",
             body: {
                 "name": serverConf.docker.name,
-                "action": "start"
+                "action": action
             },
             json: true
 

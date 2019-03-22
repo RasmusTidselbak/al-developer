@@ -2,7 +2,7 @@
     "name": "al-dev",
     "displayName": "AL Developer",
     "description": "AL Developer Helper",
-    "version": "1.6.1",
+    "version": "1.7.1",
     "publisher": "rasmus",
     "icon": "images/logo128.png",
     "engines": {
@@ -19,6 +19,7 @@
         "onCommand:aldev.newInstance",
         "onCommand:aldev.removeInstance",
         "onCommand:aldev.startInstance",
+        "onCommand:aldev.clearInstance",
         "onCommand:aldev.updateAppManifest",
         "onCommand:aldev.copyPassword",
         "onLanguage:al"
@@ -33,6 +34,10 @@
             {
                 "command": "aldev.startInstance",
                 "title": "AL Dev: Start Instance"
+            },
+            {
+                "command": "aldev.clearInstance",
+                "title": "AL Dev: Clear Instance"
             },
             {
                 "command": "aldev.removeInstance",

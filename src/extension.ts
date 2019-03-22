@@ -15,6 +15,9 @@ export function activate(context: vscode.ExtensionContext) {
     let startInstDisp = vscode.commands.registerCommand('aldev.startInstance', ih.startInstance);
     context.subscriptions.push(startInstDisp);
 
+    let clearInstDisp = vscode.commands.registerCommand('aldev.clearInstance', ih.startInstance);
+    context.subscriptions.push(clearInstDisp);
+
     let initializeDisp = vscode.commands.registerCommand('aldev.updateAppManifest', mh );
     context.subscriptions.push(initializeDisp);
 
