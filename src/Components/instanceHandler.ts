@@ -37,7 +37,7 @@ export default class {
 
         const editor: any = vscode.window.activeTextEditor;
         const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
-        const action: string = "Clear";
+        const action: string = "Start";
 
         let serverConfigs = <ServerConfig[]>config.get('configurations');
         let confObj: any = serverConfigs.find(obj => {
