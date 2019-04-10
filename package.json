@@ -2,7 +2,7 @@
     "name": "al-dev",
     "displayName": "AL Developer",
     "description": "AL Developer Helper",
-    "version": "1.7.2",
+    "version": "1.8.0",
     "publisher": "rasmus",
     "icon": "images/logo128.png",
     "engines": {
@@ -38,6 +38,10 @@
             {
                 "command": "aldev.clearInstance",
                 "title": "AL Dev: Clear Instance"
+            },
+            {
+                "command": "aldev.generateSymbols",
+                "title": "AL Dev: Generate Symbols"
             },
             {
                 "command": "aldev.removeInstance",

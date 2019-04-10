@@ -58,7 +58,7 @@ export default class {
                 // localhostHandler.startInstance(dockerConf, removeLaunchConfig);
                 break;
             case 'Cloud':
-                httpHandler.startInstance(action, dockerConf,  (status: string) => {
+                httpHandler.requestAction(action, dockerConf,  (status: string) => {
                     vscode.window.setStatusBarMessage("$(zap) Instance: Starting");
                 });
                 break;
@@ -94,8 +94,44 @@ export default class {
                 // localhostHandler.startInstance(dockerConf, removeLaunchConfig);
                 break;
             case 'Cloud':
-                httpHandler.startInstance(action, dockerConf,  (status: string) => {
-                    vscode.window.setStatusBarMessage("$(trashcan) Instance: Clearing Extensions");
+                httpHandler.requestAction(action, dockerConf,  (status: string) => {
+                    vscode.window.setStatusBarMessage("$(trashcan) Instance: Extensions Cleared");
+                });
+                break;
+        }
+
+
+    }
+
+    
+    public static generateSymbols() {
+        console.log('Generate Symbols');
+
+        const editor: any = vscode.window.activeTextEditor;
+        const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
+        const action: string = "Generate";
+
+        let serverConfigs = <ServerConfig[]>config.get('configurations');
+        let confObj: any = serverConfigs.find(obj => {
+            return obj.name === "docker";
+        });
+
+        let dockerConf: ServerConfig;
+        if (confObj) {
+            dockerConf = confObj;
+        } else {
+            return;
+        }
+
+        const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
+        switch (dockerAgentType) {
+            case 'localhost':
+                vscode.window.showErrorMessage('Not implemented for local environments');
+                // localhostHandler.startInstance(dockerConf, removeLaunchConfig);
+                break;
+            case 'Cloud':
+                httpHandler.requestAction(action, dockerConf,  (status: string) => {
+                    vscode.window.setStatusBarMessage("$(zap) Instance: Symbols Generated");
                 });
                 break;
         }
