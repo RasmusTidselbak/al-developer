@@ -2,7 +2,7 @@
     "name": "al-dev",
     "displayName": "AL Developer",
     "description": "AL Developer Helper",
-    "version": "1.8.0",
+    "version": "1.8.2",
     "publisher": "rasmus",
     "icon": "images/logo128.png",
     "engines": {
@@ -24,7 +24,7 @@
         "onCommand:aldev.copyPassword",
         "onLanguage:al"
     ],
-    "main": "./out/extension",
+    "main": "./dist/extension",
     "contributes": {
         "commands": [
             {
@@ -84,7 +84,7 @@
                         "default": "",
                         "description": "Additional parameters for the local Docker instances."
                     },
-                    "aldev.cloudKey" : {
+                    "aldev.cloudKey": {
                         "type": "string",
                         "default": "",
                         "description": "Instance key for the docker environment (required for Cloud agents)"
@@ -94,28 +94,29 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+        "vscode:prepublish": "webpack --mode production",
+        "compile": "webpack --mode none",
+        "watch": "webpack --mode none --watch",
+        "test-compile": "tsc -p ./"
     },
     "devDependencies": {
         "@types/mocha": "^2.2.42",
-        "@types/node": "^8.10.25",
+        "@types/node": "^8.10.45",
         "mocha": "^5.2.0",
-        "tslint": "^5.8.0",
-        "typescript": "^3.1.4",
-        "vscode": "^1.1.25"
+        "ts-loader": "^5.3.3",
+        "tslint": "^5.15.0",
+        "typescript": "^3.4.3",
+        "vscode": "^1.1.33"
     },
     "dependencies": {
+        "ajv": "^6.10.0",
         "copy-paste": "^1.3.0",
         "mkdirp": "^0.5.1",
         "node-powershell": "^3.3.1",
         "opn": "^4.0.2",
         "phonetic": "^0.1.1",
-        "random": "^2.0.13",
-        "request": "^2.83.0",
+        "random": "^2.1.1",
+        "request": "^2.88.0",
         "uuid": "^3.3.2"
     }
 }

@@ -28,6 +28,9 @@ export default class {
                     httpHandler.newInstance(dockerConf, replaceLaunchConfig);
                     break;
             }
+        })
+        .catch((err)=>{
+            console.log(err);
         });
 
     }
