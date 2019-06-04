@@ -14,18 +14,18 @@ export class SettingsMethods {
 
     public static defaultSettings(): SettingsFile {
         let settingsFile: SettingsFile = {};
-        let tests: TestConfig[] = [{
-            test: "unittests",
-            type: "Codeunit",
-            companyName: "CRONUS Danmark A/S",
-            codeunitId: "50130",
-            methodName: "RunTests"
-        }];
+        // let tests: TestConfig[] = [{
+        //     test: "unittests",
+        //     type: "Codeunit",
+        //     companyName: "CRONUS Danmark A/S",
+        //     codeunitId: "50130",
+        //     methodName: "RunTests"
+        // }];
 
         settingsFile.name = "UNKNOWN";
         // settingsFile.version = "BC";
         // settingsFile.local = "dk";
-        settingsFile.tests = tests;
+        // settingsFile.tests = tests;
 
         return settingsFile;
     }

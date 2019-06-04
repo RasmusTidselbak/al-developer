@@ -37,7 +37,7 @@ export default class {
             serverConf.docker.name = body.name;
             
             serverConf.docker.clickonce = agentURL + ':' + body.webport + '/NAV/';
-            serverConf.docker.webclient = agentURL + ':' + body.webclientport + '/' + body.name
+            serverConf.docker.webclient = agentURL + ':' + body.webclientport + '/NAV/';
             serverConf.docker.sqlconnection = agentURL.replace(/(^\w+:|^)\/\//, '') + ',' + body.sqlport + '\\SQLEXPRESS';
 
             callback(serverConf);

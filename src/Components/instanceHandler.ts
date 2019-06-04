@@ -29,9 +29,9 @@ export default class {
                     break;
             }
         })
-        .catch((err)=>{
-            console.log(err);
-        });
+            .catch((err) => {
+                console.log(err);
+            });
 
     }
 
@@ -61,7 +61,7 @@ export default class {
                 // localhostHandler.startInstance(dockerConf, removeLaunchConfig);
                 break;
             case 'Cloud':
-                httpHandler.requestAction(action, dockerConf,  (status: string) => {
+                httpHandler.requestAction(action, dockerConf, (status: string) => {
                     vscode.window.setStatusBarMessage("$(zap) Instance: Starting");
                 });
                 break;
@@ -70,7 +70,7 @@ export default class {
 
     }
 
-    
+
     public static clearInstance() {
         console.log('Clearing Instance');
 
@@ -97,7 +97,7 @@ export default class {
                 // localhostHandler.startInstance(dockerConf, removeLaunchConfig);
                 break;
             case 'Cloud':
-                httpHandler.requestAction(action, dockerConf,  (status: string) => {
+                httpHandler.requestAction(action, dockerConf, (status: string) => {
                     vscode.window.setStatusBarMessage("$(trashcan) Instance: Extensions Cleared");
                 });
                 break;
@@ -106,7 +106,7 @@ export default class {
 
     }
 
-    
+
     public static generateSymbols() {
         console.log('Generate Symbols');
 
@@ -133,7 +133,7 @@ export default class {
                 // localhostHandler.startInstance(dockerConf, removeLaunchConfig);
                 break;
             case 'Cloud':
-                httpHandler.requestAction(action, dockerConf,  (status: string) => {
+                httpHandler.requestAction(action, dockerConf, (status: string) => {
                     vscode.window.setStatusBarMessage("$(zap) Instance: Symbols Generated");
                 });
                 break;
@@ -230,28 +230,29 @@ function replaceLaunchConfig(dockerConf: ServerConfig) {
 
 
     paths.forEach(path => {
-        if (fs.existsSync(path)) {
+        if (!fs.existsSync(path)) {
+            fs.writeFileSync(path, '{"version": "0.2.0","configurations": []}');
+        }
 
-            let rawdata: any = fs.readFileSync(path);
-            let launchFile = JSON.parse(rawdata);
-            let serverConfigs = <ServerConfig[]>launchFile.configurations;
-            serverConfigs.forEach(function (sc: ServerConfig, index: number, object: any) {
-                if (sc.name === "docker") {
-                    if (sc.startupObjectId) {
-                        dockerConf.startupObjectId = sc.startupObjectId;
-                    }
-                    serverConfigs.splice(index, 1);
-                }
-
-                if (sc.startupObjectId && !dockerConf.startupObjectId) {
+        let rawdata: any = fs.readFileSync(path);
+        let launchFile = JSON.parse(rawdata);
+        let serverConfigs = <ServerConfig[]>launchFile.configurations;
+        serverConfigs.forEach(function (sc: ServerConfig, index: number, object: any) {
+            if (sc.name === "docker") {
+                if (sc.startupObjectId) {
                     dockerConf.startupObjectId = sc.startupObjectId;
                 }
-            });
+                serverConfigs.splice(index, 1);
+            }
 
-            serverConfigs.push(dockerConf);
-            launchFile.configurations = serverConfigs;
-            fs.writeFileSync(path, JSON.stringify(launchFile, null, 2));
-        }
+            if (sc.startupObjectId && !dockerConf.startupObjectId) {
+                dockerConf.startupObjectId = sc.startupObjectId;
+            }
+        });
+
+        serverConfigs.push(dockerConf);
+        launchFile.configurations = serverConfigs;
+        fs.writeFileSync(path, JSON.stringify(launchFile, null, 2));
     });
 
     // vscode.commands.executeCommand('aldev.copyPassword');
