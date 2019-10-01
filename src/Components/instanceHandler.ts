@@ -14,6 +14,9 @@ export default class {
             let dockerConf: ServerConfig = sc.defaultDockerConfig();
 
             dockerConf.docker.NAVVersion = navSettings.version ? navSettings.version : "";
+            if (dockerConf.docker.NAVVersion.toUpperCase() === "BC15") {
+                dockerConf.serverInstance = "BC";
+            }
             dockerConf.docker.cu = navSettings.cu;
             dockerConf.docker.local = navSettings.local;
             dockerConf.docker.owner = vscode.workspace.getConfiguration().get('aldev.cloudKey');

@@ -13,7 +13,7 @@ export default class {
             body: {
                 "Version": serverConf.docker.NAVVersion,
                 "CU": serverConf.docker.cu ? "" + serverConf.docker.cu : "0",
-                "Local": serverConf.docker.local ? serverConf.docker.local: "w1",
+                "Local": serverConf.docker.local ? serverConf.docker.local : "w1",
                 "Owner": serverConf.docker.owner
             },
             json: true
@@ -21,7 +21,7 @@ export default class {
         };
 
         request(reqOptions, function (error: any, response: any, body: any) {
-            
+
             statusdisp.dispose();
             if (error !== undefined && error !== null) {
                 vscode.window.showErrorMessage('Failed to read the content. Error: ' + error);
@@ -35,9 +35,9 @@ export default class {
             serverConf.docker.password = body.password;
             serverConf.port = body.devport;
             serverConf.docker.name = body.name;
-            
-            serverConf.docker.clickonce = agentURL + ':' + body.webport + '/NAV/';
-            serverConf.docker.webclient = agentURL + ':' + body.webclientport + '/NAV/';
+
+            serverConf.docker.clickonce = agentURL + ':' + body.webport + '/' + serverConf.serverInstance + '/';
+            serverConf.docker.webclient = agentURL + ':' + body.webclientport + '/' + serverConf.serverInstance + '/';
             serverConf.docker.sqlconnection = agentURL.replace(/(^\w+:|^)\/\//, '') + ',' + body.sqlport + '\\SQLEXPRESS';
 
             callback(serverConf);
@@ -73,7 +73,7 @@ export default class {
                 vscode.window.showErrorMessage('Failed to read the content. Status code ' + response.statusCode + ' and body: ' + body);
                 return;
             }
-            
+
             callback();
 
         });
@@ -106,13 +106,13 @@ export default class {
                 vscode.window.showErrorMessage('Failed to read the content. Status code ' + response.statusCode + ' and body: ' + body);
                 return;
             }
-            
+
             callback();
 
         });
     }
 
-    public static getInstanceStatus(serverConf: ServerConfig, callback: Function){
+    public static getInstanceStatus(serverConf: ServerConfig, callback: Function) {
         let request = require('request');
         let agentURL = vscode.workspace.getConfiguration().get("aldev.dockerAgentURL", "http://localhost");
         const reqOptions =
