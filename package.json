@@ -2,7 +2,7 @@
     "name": "al-dev",
     "displayName": "AL Developer",
     "description": "AL Developer Helper",
-    "version": "1.9.0",
+    "version": "2.0.0",
     "publisher": "rasmus",
     "icon": "images/logo128.png",
     "engines": {
@@ -21,7 +21,6 @@
         "onCommand:aldev.startInstance",
         "onCommand:aldev.clearInstance",
         "onCommand:aldev.updateAppManifest",
-        "onCommand:aldev.copyPassword",
         "onLanguage:al"
     ],
     "main": "./dist/extension",
@@ -50,10 +49,6 @@
             {
                 "command": "aldev.updateAppManifest",
                 "title": "AL Dev: Update App.json Manifest"
-            },
-            {
-                "command": "aldev.copyPassword",
-                "title": "AL Dev: Copy Password"
             }
         ],
         "configuration": [
@@ -108,11 +103,12 @@
         "ts-loader": "^5.3.3",
         "tslint": "^5.15.0",
         "typescript": "^3.4.3",
-        "vscode": "^1.1.33"
+        "vscode": "^1.1.33",
+        "webpack": "^4.41.2",
+        "webpack-cli": "^3.3.10"
     },
     "dependencies": {
         "ajv": "^6.10.0",
-        "copy-paste": "^1.3.0",
         "mkdirp": "^0.5.1",
         "node-powershell": "^3.3.1",
         "opn": "^4.0.2",

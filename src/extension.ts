@@ -24,9 +24,6 @@ export function activate(context: vscode.ExtensionContext) {
     let initializeDisp = vscode.commands.registerCommand('aldev.updateAppManifest', mh );
     context.subscriptions.push(initializeDisp);
 
-    let copyDisp = vscode.commands.registerCommand('aldev.copyPassword', ih.copyPassword);
-    context.subscriptions.push(copyDisp);
-
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(ih.getInstanceStatus));
 }
 

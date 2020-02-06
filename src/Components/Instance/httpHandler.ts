@@ -14,7 +14,8 @@ export default class {
                 "Version": serverConf.docker.NAVVersion,
                 "CU": serverConf.docker.cu ? "" + serverConf.docker.cu : "0",
                 "Local": serverConf.docker.local ? serverConf.docker.local : "w1",
-                "Owner": serverConf.docker.owner
+                "Owner": serverConf.docker.owner,
+                "Backup": serverConf.docker.backup
             },
             json: true
 

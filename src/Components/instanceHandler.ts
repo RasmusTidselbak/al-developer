@@ -20,6 +20,7 @@ export default class {
             dockerConf.docker.cu = navSettings.cu;
             dockerConf.docker.local = navSettings.local;
             dockerConf.docker.owner = vscode.workspace.getConfiguration().get('aldev.cloudKey');
+            dockerConf.docker.backup = navSettings.backup;
 
             const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
 
@@ -176,27 +177,6 @@ export default class {
 
     }
 
-    public static copyPassword() {
-        const editor: any = vscode.window.activeTextEditor;
-        const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
-        let serverConfigs = <ServerConfig[]>config.get('configurations');
-        let clipBoard = require('copy-paste');
-
-        serverConfigs.forEach(conf => {
-            if (conf.name === "docker") {
-                if (conf.docker.password) {
-                    clipBoard.copy(conf.docker.password, () => {
-                        vscode.window.showInformationMessage('The password for ' + conf.name + ' has been copied to your clipboard.');
-                    });
-                }
-            }
-            replaceLaunchConfig(conf);
-        });
-
-
-
-
-    }
 
     public static getInstanceStatus() {
         const editor: any = vscode.window.activeTextEditor;
@@ -257,8 +237,6 @@ function replaceLaunchConfig(dockerConf: ServerConfig) {
         launchFile.configurations = serverConfigs;
         fs.writeFileSync(path, JSON.stringify(launchFile, null, 2));
     });
-
-    // vscode.commands.executeCommand('aldev.copyPassword');
 }
 
 function removeLaunchConfig() {
