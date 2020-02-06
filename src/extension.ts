@@ -20,6 +20,9 @@ export function activate(context: vscode.ExtensionContext) {
 
     let generateSymbolsDisp = vscode.commands.registerCommand('aldev.generateSymbols', ih.generateSymbols);
     context.subscriptions.push(generateSymbolsDisp);
+    
+    let createBackupDisp = vscode.commands.registerCommand('aldev.generateSymbols', ih.createBackup);
+    context.subscriptions.push(createBackupDisp);
 
     let initializeDisp = vscode.commands.registerCommand('aldev.updateAppManifest', mh );
     context.subscriptions.push(initializeDisp);

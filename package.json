@@ -2,7 +2,7 @@
     "name": "al-dev",
     "displayName": "AL Developer",
     "description": "AL Developer Helper",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "publisher": "rasmus",
     "icon": "images/logo128.png",
     "engines": {
@@ -20,6 +20,8 @@
         "onCommand:aldev.removeInstance",
         "onCommand:aldev.startInstance",
         "onCommand:aldev.clearInstance",
+        "onCommand:aldev.generateSymbols",
+        "onCommand:aldev.createBackup",
         "onCommand:aldev.updateAppManifest",
         "onLanguage:al"
     ],
@@ -41,6 +43,10 @@
             {
                 "command": "aldev.generateSymbols",
                 "title": "AL Dev: Generate Symbols"
+            },
+            {
+                "command": "aldev.createBackup",
+                "title": "AL Dev: Generate Backupfile"
             },
             {
                 "command": "aldev.removeInstance",

@@ -145,6 +145,45 @@ export default class {
 
 
     }
+    public static createBackup() {
+        console.log('Creating Backup Symbols');
+
+        const editor: any = vscode.window.activeTextEditor;
+        const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
+        let navSettings = SettingsMethods.getSettings();
+        if (!navSettings.backup) {
+            vscode.window.showErrorMessage('No backup file has been assigned in the settingsfile');
+            return;
+        }
+        
+        const action: string = "BACKUP: " + navSettings.backup;
+
+        let serverConfigs = <ServerConfig[]>config.get('configurations');
+        let confObj: any = serverConfigs.find(obj => {
+            return obj.name === "docker";
+        });
+
+        let dockerConf: ServerConfig;
+        if (confObj) {
+            dockerConf = confObj;
+        } else {
+            return;
+        }
+
+        const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
+        switch (dockerAgentType) {
+            case 'localhost':
+                vscode.window.showErrorMessage('Not implemented for local environments');
+                break;
+            case 'Cloud':
+                httpHandler.requestAction(action, dockerConf, (status: string) => {
+                    vscode.window.setStatusBarMessage("$(zap) Instance: Generating backup");
+                });
+                break;
+        }
+
+
+    }
 
     public static removeInstance() {
         console.log('Starting Remove Instance');
