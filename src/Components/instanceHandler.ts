@@ -156,7 +156,7 @@ export default class {
             return;
         }
         
-        const action: string = "BACKUP: " + navSettings.backup;
+        const action: string = "BACKUP=" + navSettings.backup;
 
         let serverConfigs = <ServerConfig[]>config.get('configurations');
         let confObj: any = serverConfigs.find(obj => {
