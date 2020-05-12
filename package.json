@@ -2,7 +2,7 @@
     "name": "al-dev",
     "displayName": "AL Developer",
     "description": "AL Developer Helper",
-    "version": "1.9.0",
+    "version": "2.1.4",
     "publisher": "rasmus",
     "icon": "images/logo128.png",
     "engines": {
@@ -20,8 +20,9 @@
         "onCommand:aldev.removeInstance",
         "onCommand:aldev.startInstance",
         "onCommand:aldev.clearInstance",
+        "onCommand:aldev.generateSymbols",
+        "onCommand:aldev.createBackup",
         "onCommand:aldev.updateAppManifest",
-        "onCommand:aldev.copyPassword",
         "onLanguage:al"
     ],
     "main": "./dist/extension",
@@ -44,16 +45,16 @@
                 "title": "AL Dev: Generate Symbols"
             },
             {
+                "command": "aldev.createBackup",
+                "title": "AL Dev: Generate Backupfile"
+            },
+            {
                 "command": "aldev.removeInstance",
                 "title": "AL Dev: Remove Instance"
             },
             {
                 "command": "aldev.updateAppManifest",
                 "title": "AL Dev: Update App.json Manifest"
-            },
-            {
-                "command": "aldev.copyPassword",
-                "title": "AL Dev: Copy Password"
             }
         ],
         "configuration": [
@@ -108,17 +109,19 @@
         "ts-loader": "^5.3.3",
         "tslint": "^5.15.0",
         "typescript": "^3.4.3",
-        "vscode": "^1.1.33"
+        "vscode": "^1.1.33",
+        "webpack": "^4.42.1",
+        "webpack-cli": "^3.3.10"
     },
     "dependencies": {
         "ajv": "^6.10.0",
-        "copy-paste": "^1.3.0",
         "mkdirp": "^0.5.1",
         "node-powershell": "^3.3.1",
         "opn": "^4.0.2",
         "phonetic": "^0.1.1",
         "random": "^2.1.1",
         "request": "^2.88.0",
-        "uuid": "^3.3.2"
+        "uuid": "^3.3.2",
+        "vsce": "^1.75.0"
     }
 }

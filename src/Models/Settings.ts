@@ -7,6 +7,7 @@ export interface SettingsFile {
     cu?: string;
     local?: string;
     tests?: TestConfig[];
+    backup?: string;
 
 }
 

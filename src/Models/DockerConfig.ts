@@ -10,5 +10,6 @@ export default interface DockerConfig {
     sqlconnection: string;
     webclient: string;
     owner?: string;
+    backup?: string;
 
 }

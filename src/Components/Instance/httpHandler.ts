@@ -14,7 +14,8 @@ export default class {
                 "Version": serverConf.docker.NAVVersion,
                 "CU": serverConf.docker.cu ? "" + serverConf.docker.cu : "0",
                 "Local": serverConf.docker.local ? serverConf.docker.local : "w1",
-                "Owner": serverConf.docker.owner
+                "Owner": serverConf.docker.owner,
+                "Backup": serverConf.docker.backup
             },
             json: true
 
@@ -25,6 +26,7 @@ export default class {
             statusdisp.dispose();
             if (error !== undefined && error !== null) {
                 vscode.window.showErrorMessage('Failed to read the content. Error: ' + error);
+                console.log(error);
                 return;
             }
             if (response.statusCode !== 202) {
@@ -35,6 +37,10 @@ export default class {
             serverConf.docker.password = body.password;
             serverConf.port = body.devport;
             serverConf.docker.name = body.name;
+            
+            if (body.version.toUpperCase() === "BC15") {
+                serverConf.serverInstance = "BC";
+            }
 
             serverConf.docker.clickonce = agentURL + ':' + body.webport + '/' + serverConf.serverInstance + '/';
             serverConf.docker.webclient = agentURL + ':' + body.webclientport + '/' + serverConf.serverInstance + '/';
@@ -100,6 +106,7 @@ export default class {
             statusdisp.dispose();
             if (error !== undefined && error !== null) {
                 vscode.window.showErrorMessage('Failed to read the content. Error: ' + error);
+                console.log(error);
                 return;
             }
             if (response.statusCode !== 200) {
