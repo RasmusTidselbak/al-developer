@@ -45,8 +45,8 @@
                 "title": "AL Dev: Generate Symbols"
             },
             {
-                "command": "aldev.createBackup",
-                "title": "AL Dev: Generate Backupfile"
+                "command": "aldev.createImage",
+                "title": "AL Dev: Save Image"
             },
             {
                 "command": "aldev.removeInstance",

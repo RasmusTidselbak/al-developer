@@ -21,6 +21,7 @@ export default class {
             dockerConf.docker.local = navSettings.local;
             dockerConf.docker.owner = vscode.workspace.getConfiguration().get('aldev.cloudKey');
             dockerConf.docker.backup = navSettings.backup;
+            dockerConf.docker.image = navSettings.image;
 
             const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
 
@@ -145,18 +146,21 @@ export default class {
 
 
     }
-    public static createBackup() {
-        console.log('Creating Backup Symbols');
+
+    private static async assignImageName(): Promise<string | undefined> {
+        const result = await vscode.window.showInputBox({ placeHolder: "New Image Name" });
+        return result;
+    }
+
+    public static createImage() {
+        console.log('Creating Image based on the current configuration');
 
         const editor: any = vscode.window.activeTextEditor;
         const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
-        let navSettings = SettingsMethods.getSettings();
-        if (!navSettings.backup) {
-            vscode.window.showErrorMessage('No backup file has been assigned in the settingsfile');
-            return;
-        }
         
-        const action: string = "BACKUP=" + navSettings.backup;
+        const ImageName = this.assignImageName();
+
+        const action: string = "COMMIT=" + ImageName;
 
         let serverConfigs = <ServerConfig[]>config.get('configurations');
         let confObj: any = serverConfigs.find(obj => {
@@ -177,7 +181,7 @@ export default class {
                 break;
             case 'Cloud':
                 httpHandler.requestAction(action, dockerConf, (status: string) => {
-                    vscode.window.setStatusBarMessage("$(zap) Instance: Generating backup");
+                    vscode.window.setStatusBarMessage("$(zap) Instance: Generating Image");
                 });
                 break;
         }

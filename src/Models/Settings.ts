@@ -8,7 +8,7 @@ export interface SettingsFile {
     local?: string;
     tests?: TestConfig[];
     backup?: string;
-
+    image?: string;
 }
 
 export class SettingsMethods {
@@ -52,20 +52,10 @@ export class SettingsMethods {
     }
 
     static async validateSettings(_settings: SettingsFile) {
-        if (!_settings.version) {
-            await this.pickVersion().then((value) => {
-                _settings.version = value ? value : "";
-            });
-            if (!_settings.cu) {
-                await this.pickCU().then((value) => {
-                    _settings.cu = value ? value : "";
-                });
-            }
-            if (!_settings.local) {
-                await this.pickLocal().then((value) => {
-                    _settings.local = value ? value : "";
-                });
-            }
+        if (!_settings.version && !_settings.image) {
+            const error = "Could not read settingsfile, please verify that it exists."
+            vscode.window.showErrorMessage(error);
+            throw error;
         }
     }
 

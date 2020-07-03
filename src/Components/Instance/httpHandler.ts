@@ -15,7 +15,8 @@ export default class {
                 "CU": serverConf.docker.cu ? "" + serverConf.docker.cu : "0",
                 "Local": serverConf.docker.local ? serverConf.docker.local : "w1",
                 "Owner": serverConf.docker.owner,
-                "Backup": serverConf.docker.backup
+                "Backup": serverConf.docker.backup,
+                "Image": serverConf.docker.image
             },
             json: true
 

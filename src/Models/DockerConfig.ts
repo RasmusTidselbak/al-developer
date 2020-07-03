@@ -11,5 +11,5 @@ export default interface DockerConfig {
     webclient: string;
     owner?: string;
     backup?: string;
-
+    image?: string;
 }
