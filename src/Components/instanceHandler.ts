@@ -75,6 +75,74 @@ export default class {
 
     }
 
+    public static stopInstance() {
+        console.log('Stopping Instance');
+
+        const editor: any = vscode.window.activeTextEditor;
+        const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
+        const action: string = "Stop";
+
+        let serverConfigs = <ServerConfig[]>config.get('configurations');
+        let confObj: any = serverConfigs.find(obj => {
+            return obj.name === "docker";
+        });
+
+        let dockerConf: ServerConfig;
+        if (confObj) {
+            dockerConf = confObj;
+        } else {
+            return;
+        }
+
+        const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
+        switch (dockerAgentType) {
+            case 'localhost':
+                vscode.window.showErrorMessage('Not implemented for local environments');
+                // localhostHandler.startInstance(dockerConf, removeLaunchConfig);
+                break;
+            case 'Cloud':
+                httpHandler.requestAction(action, dockerConf, (status: string) => {
+                    vscode.window.setStatusBarMessage("$(zap) Instance: Stopping");
+                });
+                break;
+        }
+
+
+    }
+    public static restartInstance() {
+        console.log('Restarting Instance');
+
+        const editor: any = vscode.window.activeTextEditor;
+        const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
+        const action: string = "Restart";
+
+        let serverConfigs = <ServerConfig[]>config.get('configurations');
+        let confObj: any = serverConfigs.find(obj => {
+            return obj.name === "docker";
+        });
+
+        let dockerConf: ServerConfig;
+        if (confObj) {
+            dockerConf = confObj;
+        } else {
+            return;
+        }
+
+        const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
+        switch (dockerAgentType) {
+            case 'localhost':
+                vscode.window.showErrorMessage('Not implemented for local environments');
+                // localhostHandler.startInstance(dockerConf, removeLaunchConfig);
+                break;
+            case 'Cloud':
+                httpHandler.requestAction(action, dockerConf, (status: string) => {
+                    vscode.window.setStatusBarMessage("$(zap) Instance: Restarting");
+                });
+                break;
+        }
+
+
+    }
 
     public static clearInstance() {
         console.log('Clearing Instance');

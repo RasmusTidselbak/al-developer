@@ -37,6 +37,14 @@
                 "title": "AL Dev: Start Instance"
             },
             {
+                "command": "aldev.stopInstance",
+                "title": "AL Dev: Stop Instance"
+            },
+            {
+                "command": "aldev.restartInstance",
+                "title": "AL Dev: Restart Instance"
+            },
+            {
                 "command": "aldev.clearInstance",
                 "title": "AL Dev: Clear Instance"
             },
