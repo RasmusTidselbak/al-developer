@@ -215,46 +215,44 @@ export default class {
 
     }
 
-    private static async assignImageName(): Promise<string | undefined> {
-        const result = await vscode.window.showInputBox({ placeHolder: "New Image Name" });
-        return result;
-    }
 
     public static createImage() {
         console.log('Creating Image based on the current configuration');
 
         const editor: any = vscode.window.activeTextEditor;
         const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
-        
-        const ImageName = this.assignImageName();
 
-        const action: string = "COMMIT=" + ImageName;
+        vscode.window.showInputBox({ placeHolder: "New Image Name" }).then((ImageName) => {
+            const action: string = "COMMIT=" + ImageName;
 
-        let serverConfigs = <ServerConfig[]>config.get('configurations');
-        let confObj: any = serverConfigs.find(obj => {
-            return obj.name === "docker";
+            let serverConfigs = <ServerConfig[]>config.get('configurations');
+            let confObj: any = serverConfigs.find(obj => {
+                return obj.name === "docker";
+            });
+
+            let dockerConf: ServerConfig;
+            if (confObj) {
+                dockerConf = confObj;
+            } else {
+                return;
+            }
+
+            const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
+            switch (dockerAgentType) {
+                case 'localhost':
+                    vscode.window.showErrorMessage('Not implemented for local environments');
+                    break;
+                case 'Cloud':
+                    httpHandler.requestAction(action, dockerConf, (status: string) => {
+                        vscode.window.setStatusBarMessage("$(zap) Instance: Generating Image");
+
+                        let navSettings = SettingsMethods.getSettings();
+                        navSettings.image = ImageName;
+                        SettingsMethods.saveSettings(navSettings);
+                    });
+                    break;
+            }
         });
-
-        let dockerConf: ServerConfig;
-        if (confObj) {
-            dockerConf = confObj;
-        } else {
-            return;
-        }
-
-        const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
-        switch (dockerAgentType) {
-            case 'localhost':
-                vscode.window.showErrorMessage('Not implemented for local environments');
-                break;
-            case 'Cloud':
-                httpHandler.requestAction(action, dockerConf, (status: string) => {
-                    vscode.window.setStatusBarMessage("$(zap) Instance: Generating Image");
-                });
-                break;
-        }
-
-
     }
 
     public static removeInstance() {

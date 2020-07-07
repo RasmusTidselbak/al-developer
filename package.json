@@ -54,7 +54,7 @@
             },
             {
                 "command": "aldev.createImage",
-                "title": "AL Dev: Save Image"
+                "title": "AL Dev: Commit Image"
             },
             {
                 "command": "aldev.removeInstance",

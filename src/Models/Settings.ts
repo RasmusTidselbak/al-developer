@@ -59,23 +59,6 @@ export class SettingsMethods {
         }
     }
 
-    static async pickVersion(): Promise<string | undefined> {
-        const result = await vscode.window.showQuickPick(['BC', '2018'], {
-            placeHolder: 'Pick a version',
-        });
-        return result;
-    }
-    static async pickCU(): Promise<string | undefined> {
-        const result = await vscode.window.showInputBox({ placeHolder: "Pick a cumulative update" });
-        return result;
-    }
-    static async pickLocal(): Promise<string | undefined> {
-        const result = await vscode.window.showQuickPick(['DK', 'DE'], {
-            placeHolder: 'Pick a localization',
-        });
-        return result;
-    }
-
     static settingsFolder(): string | undefined {
         const fs = require('fs');
         let settingsPath: string;
@@ -124,6 +107,10 @@ export class SettingsMethods {
     
             if (settingsFile.local) {
                 _settings.local = settingsFile.local;
+            }
+            
+            if (settingsFile.image) {
+                _settings.image = settingsFile.image;
             }
     
             fs.writeFileSync(settingsPath, JSON.stringify(_settings, null, 2));
