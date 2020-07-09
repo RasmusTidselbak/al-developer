@@ -132,7 +132,6 @@ export default class {
         switch (dockerAgentType) {
             case 'localhost':
                 vscode.window.showErrorMessage('Not implemented for local environments');
-                // localhostHandler.startInstance(dockerConf, removeLaunchConfig);
                 break;
             case 'Cloud':
                 httpHandler.requestAction(action, dockerConf, (status: string) => {
@@ -273,48 +272,63 @@ export default class {
             return;
         }
 
-        const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
-        switch (dockerAgentType) {
-            case 'localhost':
-                localhostHandler.removeInstance(dockerConf, removeLaunchConfig);
-                break;
-            case 'Cloud':
-                httpHandler.removeInstance(dockerConf, removeLaunchConfig);
-                break;
-        }
-
-
-    }
-
-
-    public static getInstanceStatus() {
-        const editor: any = vscode.window.activeTextEditor;
-        const config = vscode.workspace.getConfiguration('launch', editor.document.uri);
-        let serverConfigs = <ServerConfig[]>config.get('configurations');
-
-        serverConfigs.forEach(conf => {
-            if (conf.name === "docker") {
+        vscode.window.withProgress({
+            location: vscode.ProgressLocation.Notification,
+            title: "Removing instance " + dockerConf.docker.name
+        }, (progress, token) => {
+            const p = new Promise(resolve => {
 
                 const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
                 switch (dockerAgentType) {
                     case 'localhost':
-                        localhostHandler.getInstanceStatus(conf, (status: string) => {
-                            vscode.window.setStatusBarMessage("$(zap) Instance: " + status);
+                        localhostHandler.removeInstance(dockerConf, () => {
+                            removeLaunchConfig();
+                            resolve();
                         });
                         break;
                     case 'Cloud':
-                        httpHandler.getInstanceStatus(conf, (status: string) => {
-                            vscode.window.setStatusBarMessage("$(zap) Instance: " + status);
+                        httpHandler.removeInstance(dockerConf, () => {
+                            removeLaunchConfig();
+                            resolve();
                         });
                         break;
                 }
-            }
+            });
+            return p;
         });
     }
 }
 
+function getInstanceStatus(serverConf: ServerConfig) {
+    vscode.window.setStatusBarMessage("$(zap) Instance: starting");
+    vscode.window.withProgress({
+        location: vscode.ProgressLocation.Notification,
+        title: "Starting instance " + serverConf.docker.name
+    }, (progress, token) => {
+        const p = new Promise(resolve => {
 
-function replaceLaunchConfig(dockerConf: ServerConfig) {
+            const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
+            switch (dockerAgentType) {
+                case 'localhost':
+                    localhostHandler.getInstanceStatus(serverConf, (status: string) => {
+                        vscode.window.setStatusBarMessage("$(zap) Instance: " + status);
+                        resolve();
+                    });
+                    break;
+                case 'Cloud':
+                    httpHandler.getInstanceStatus(serverConf, (status: string) => {
+                        vscode.window.setStatusBarMessage("$(zap) Instance: " + status);
+                        resolve();
+                    });
+                    break;
+            }
+        });
+        return p;
+    });
+}
+
+
+function replaceLaunchConfig(serverConf: ServerConfig) {
     let paths: string[] = [
         vscode.workspace.rootPath + "\\.vscode\\launch.json",
         vscode.workspace.rootPath + "\\..\\app\\.vscode\\launch.json",
@@ -332,20 +346,21 @@ function replaceLaunchConfig(dockerConf: ServerConfig) {
         serverConfigs.forEach(function (sc: ServerConfig, index: number, object: any) {
             if (sc.name === "docker") {
                 if (sc.startupObjectId) {
-                    dockerConf.startupObjectId = sc.startupObjectId;
+                    serverConf.startupObjectId = sc.startupObjectId;
                 }
                 serverConfigs.splice(index, 1);
             }
 
-            if (sc.startupObjectId && !dockerConf.startupObjectId) {
-                dockerConf.startupObjectId = sc.startupObjectId;
+            if (sc.startupObjectId && !serverConf.startupObjectId) {
+                serverConf.startupObjectId = sc.startupObjectId;
             }
         });
 
-        serverConfigs.push(dockerConf);
+        serverConfigs.push(serverConf);
         launchFile.configurations = serverConfigs;
         fs.writeFileSync(path, JSON.stringify(launchFile, null, 2));
     });
+    getInstanceStatus(serverConf);
 }
 
 function removeLaunchConfig() {
@@ -360,5 +375,5 @@ function removeLaunchConfig() {
         }
     });
 
-    config.update('configurations', serverConfigs);
+    config.update('configurations', serverConfigs, vscode.ConfigurationTarget.WorkspaceFolder);
 }

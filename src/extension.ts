@@ -33,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
     let initializeDisp = vscode.commands.registerCommand('aldev.updateAppManifest', mh );
     context.subscriptions.push(initializeDisp);
 
-    context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(ih.getInstanceStatus));
+    // context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(ih.getInstanceStatus));
 }
 
 export function deactivate() {
