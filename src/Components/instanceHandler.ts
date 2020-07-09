@@ -225,6 +225,10 @@ export default class {
 
         vscode.window.showInputBox({ placeHolder: "New Image Name" }).then((ImageName) => {
             const action: string = "COMMIT=" + ImageName;
+            if(ImageName === ""){
+                vscode.window.showErrorMessage('Invalid image name');
+                return;
+            }
 
             let serverConfigs = <ServerConfig[]>config.get('configurations');
             let confObj: any = serverConfigs.find(obj => {
@@ -238,24 +242,32 @@ export default class {
                 return;
             }
 
-            
-            let statusdisp = vscode.window.setStatusBarMessage("$(zap) Instance: Committing");
-            const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
-            switch (dockerAgentType) {
-                case 'localhost': 
-                    vscode.window.showErrorMessage('Not implemented for local environments');
-                    break;
-                case 'Cloud':
-                    httpHandler.requestAction(action, dockerConf, statusdisp, (status: string) => {
+            vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title: "Committing instance " + dockerConf.docker.name + "to image " + ImageName
+            }, (progress, token) => {
+                const p = new Promise(resolve => {
 
-                        let navSettings = SettingsMethods.getSettings();
-                        navSettings.image = ImageName;
-                        SettingsMethods.saveSettings(navSettings);
+                    let statusdisp = vscode.window.setStatusBarMessage("$(zap) Instance: Committing");
+                    const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
+                    switch (dockerAgentType) {
+                        case 'localhost':
+                            vscode.window.showErrorMessage('Not implemented for local environments');
+                            break;
+                        case 'Cloud':
+                            httpHandler.requestAction(action, dockerConf, statusdisp, (status: string) => {
+                                resolve();
+                                let navSettings = SettingsMethods.getSettings();
+                                navSettings.image = ImageName;
+                                SettingsMethods.saveSettings(navSettings);
 
-                        getInstanceStatus(dockerConf);
-                    });
-                    break;
-            }
+                                getInstanceStatus(dockerConf);
+                            });
+                            break;
+                    }
+                });
+                return p;
+            });
         });
     }
 
