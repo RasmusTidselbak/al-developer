@@ -103,7 +103,7 @@ export default class {
                 break;
             case 'Cloud':
                 httpHandler.requestAction(action, dockerConf, statusdisp, (status: string) => {
-                    getInstanceStatus(dockerConf);
+                    vscode.window.setStatusBarMessage("$(zap) Instance: Stopped");
                 });
                 break;
         }
