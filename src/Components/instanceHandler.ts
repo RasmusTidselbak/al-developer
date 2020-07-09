@@ -244,7 +244,7 @@ export default class {
 
             vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
-                title: "Committing instance " + dockerConf.docker.name + "to image " + ImageName
+                title: "Committing instance " + dockerConf.docker.name + " to image " + ImageName
             }, (progress, token) => {
                 const p = new Promise(resolve => {
 
