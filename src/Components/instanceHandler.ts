@@ -59,6 +59,7 @@ export default class {
             return;
         }
 
+        let statusdisp = vscode.window.setStatusBarMessage("$(zap) Instance: Starting");
         const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
         switch (dockerAgentType) {
             case 'localhost':
@@ -66,8 +67,8 @@ export default class {
                 // localhostHandler.startInstance(dockerConf, removeLaunchConfig);
                 break;
             case 'Cloud':
-                httpHandler.requestAction(action, dockerConf, (status: string) => {
-                    vscode.window.setStatusBarMessage("$(zap) Instance: Starting");
+                httpHandler.requestAction(action, dockerConf, statusdisp, (status: string) => {
+                    getInstanceStatus(dockerConf);
                 });
                 break;
         }
@@ -93,7 +94,7 @@ export default class {
         } else {
             return;
         }
-
+        let statusdisp = vscode.window.setStatusBarMessage("$(zap) Instance: Stopping");
         const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
         switch (dockerAgentType) {
             case 'localhost':
@@ -101,8 +102,8 @@ export default class {
                 // localhostHandler.startInstance(dockerConf, removeLaunchConfig);
                 break;
             case 'Cloud':
-                httpHandler.requestAction(action, dockerConf, (status: string) => {
-                    vscode.window.setStatusBarMessage("$(zap) Instance: Stopping");
+                httpHandler.requestAction(action, dockerConf, statusdisp, (status: string) => {
+                    getInstanceStatus(dockerConf);
                 });
                 break;
         }
@@ -127,15 +128,15 @@ export default class {
         } else {
             return;
         }
-
+        let statusdisp = vscode.window.setStatusBarMessage("$(zap) Instance: Restarting");
         const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
         switch (dockerAgentType) {
             case 'localhost':
                 vscode.window.showErrorMessage('Not implemented for local environments');
                 break;
             case 'Cloud':
-                httpHandler.requestAction(action, dockerConf, (status: string) => {
-                    vscode.window.setStatusBarMessage("$(zap) Instance: Restarting");
+                httpHandler.requestAction(action, dockerConf, statusdisp, (status: string) => {
+                    getInstanceStatus(dockerConf);
                 });
                 break;
         }
@@ -162,6 +163,7 @@ export default class {
             return;
         }
 
+        let statusdisp = vscode.window.setStatusBarMessage("$(zap) Removing non Microsoft Extensions");
         const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
         switch (dockerAgentType) {
             case 'localhost':
@@ -169,7 +171,7 @@ export default class {
                 // localhostHandler.startInstance(dockerConf, removeLaunchConfig);
                 break;
             case 'Cloud':
-                httpHandler.requestAction(action, dockerConf, (status: string) => {
+                httpHandler.requestAction(action, dockerConf, statusdisp, (status: string) => {
                     vscode.window.setStatusBarMessage("$(trashcan) Instance: Extensions Cleared");
                 });
                 break;
@@ -197,7 +199,7 @@ export default class {
         } else {
             return;
         }
-
+        let statusdisp = vscode.window.setStatusBarMessage("$(zap) Generating symbols");
         const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
         switch (dockerAgentType) {
             case 'localhost':
@@ -205,7 +207,7 @@ export default class {
                 // localhostHandler.startInstance(dockerConf, removeLaunchConfig);
                 break;
             case 'Cloud':
-                httpHandler.requestAction(action, dockerConf, (status: string) => {
+                httpHandler.requestAction(action, dockerConf, statusdisp, (status: string) => {
                     vscode.window.setStatusBarMessage("$(zap) Instance: Symbols Generated");
                 });
                 break;
@@ -215,7 +217,7 @@ export default class {
     }
 
 
-    public static createImage() {
+    public static commitImage() {
         console.log('Creating Image based on the current configuration');
 
         const editor: any = vscode.window.activeTextEditor;
@@ -236,18 +238,21 @@ export default class {
                 return;
             }
 
+            
+            let statusdisp = vscode.window.setStatusBarMessage("$(zap) Instance: Committing");
             const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
             switch (dockerAgentType) {
-                case 'localhost':
+                case 'localhost': 
                     vscode.window.showErrorMessage('Not implemented for local environments');
                     break;
                 case 'Cloud':
-                    httpHandler.requestAction(action, dockerConf, (status: string) => {
-                        vscode.window.setStatusBarMessage("$(zap) Instance: Generating Image");
+                    httpHandler.requestAction(action, dockerConf, statusdisp, (status: string) => {
 
                         let navSettings = SettingsMethods.getSettings();
                         navSettings.image = ImageName;
                         SettingsMethods.saveSettings(navSettings);
+
+                        getInstanceStatus(dockerConf);
                     });
                     break;
             }
@@ -300,7 +305,7 @@ export default class {
 }
 
 function getInstanceStatus(serverConf: ServerConfig) {
-    vscode.window.setStatusBarMessage("$(zap) Instance: starting");
+    vscode.window.setStatusBarMessage("$(zap) Instance: Starting");
     vscode.window.withProgress({
         location: vscode.ProgressLocation.Notification,
         title: "Starting instance " + serverConf.docker.name

@@ -2,7 +2,7 @@
     "name": "al-dev",
     "displayName": "AL Developer",
     "description": "AL Developer Helper",
-    "version": "3.0.2",
+    "version": "3.0.3",
     "publisher": "rasmus",
     "icon": "images/logo128.png",
     "engines": {
@@ -23,7 +23,7 @@
         "onCommand:aldev.restartInstance",
         "onCommand:aldev.clearInstance",
         "onCommand:aldev.generateSymbols",
-        "onCommand:aldev.createImage",
+        "onCommand:aldev.commitImage",
         "onCommand:aldev.createBackup",
         "onCommand:aldev.updateAppManifest",
         "onLanguage:al"
@@ -56,7 +56,7 @@
                 "title": "AL Dev: Generate Symbols"
             },
             {
-                "command": "aldev.createImage",
+                "command": "aldev.commitImage",
                 "title": "AL Dev: Commit Image"
             },
             {

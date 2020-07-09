@@ -52,11 +52,10 @@ export default class {
     }
 
 
-    public static requestAction(action: string, serverConf: ServerConfig, callback: Function) {
+    public static requestAction(action: string, serverConf: ServerConfig, statusdisp: vscode.Disposable, callback: Function) {
 
         let request = require('request');
         let agentURL = vscode.workspace.getConfiguration().get("aldev.dockerAgentURL", "http://localhost");
-        let statusdisp = vscode.window.setStatusBarMessage('$(zap) Action: ' + action);
         const reqOptions =
         {
             uri: agentURL + "/api/Instance",
