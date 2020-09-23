@@ -324,8 +324,8 @@ export default class {
             vscode.window.showErrorMessage("The settings.json manifest could not be found.");
             return;
         }
-        
-        let settingsUri: vscode.Uri = vscode.Uri.parse(settingsPath);
+
+        let settingsUri: vscode.Uri = vscode.Uri.file(settingsPath);
 
         vscode.workspace.openTextDocument(settingsUri).then(doc => {
             vscode.window.showTextDocument(doc);
