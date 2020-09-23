@@ -51,15 +51,7 @@ export class SettingsMethods {
         }
     }
 
-    static async validateSettings(_settings: SettingsFile) {
-        if (!_settings.version && !_settings.image) {
-            const error = "Could not read settingsfile, please verify that it exists."
-            vscode.window.showErrorMessage(error);
-            throw error;
-        }
-    }
-
-    static settingsFolder(): string | undefined {
+    public static settingsFolder(): string | undefined {
         const fs = require('fs');
         let settingsPath: string;
         let folderPath: string = this.getRootFolderPath();
@@ -73,6 +65,15 @@ export class SettingsMethods {
         }
         return settingsPath;
     }
+
+    static async validateSettings(_settings: SettingsFile) {
+        if (!_settings.version && !_settings.image) {
+            const error = "Could not read settingsfile, please verify that it exists."
+            vscode.window.showErrorMessage(error);
+            throw error;
+        }
+    }
+
 
     static defaultSettingsPath(): string {
         let rootFolder = this.getRootFolderPath();

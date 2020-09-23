@@ -26,6 +26,7 @@
         "onCommand:aldev.commitImage",
         "onCommand:aldev.createBackup",
         "onCommand:aldev.updateAppManifest",
+        "onCommand:aldev.openSettings",
         "onLanguage:al"
     ],
     "main": "./dist/extension",
@@ -66,6 +67,10 @@
             {
                 "command": "aldev.updateAppManifest",
                 "title": "AL Dev: Update App.json Manifest"
+            },
+            {
+                "command": "aldev.openSettings",
+                "title": "AL Dev: Open Settings.json"
             }
         ],
         "configuration": [

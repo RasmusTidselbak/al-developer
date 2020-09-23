@@ -314,6 +314,23 @@ export default class {
             return p;
         });
     }
+
+    /**
+     * openSettings
+     */
+    public static openSettings() {
+        let settingsPath: string | undefined = SettingsMethods.settingsFolder();
+        if (!settingsPath) {
+            vscode.window.showErrorMessage("The settings.json manifest could not be found.");
+            return;
+        }
+        
+        let settingsUri: vscode.Uri = vscode.Uri.parse(settingsPath);
+
+        vscode.workspace.openTextDocument(settingsUri).then(doc => {
+            vscode.window.showTextDocument(doc);
+        });
+    }
 }
 
 function getInstanceStatus(serverConf: ServerConfig) {

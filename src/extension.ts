@@ -30,6 +30,9 @@ export function activate(context: vscode.ExtensionContext) {
     let createBackupDisp = vscode.commands.registerCommand('aldev.commitImage', ih.commitImage);
     context.subscriptions.push(createBackupDisp);
 
+    let openSettingsDisp = vscode.commands.registerCommand('aldev.openSettings', ih.openSettings );
+    context.subscriptions.push(openSettingsDisp);
+
     let initializeDisp = vscode.commands.registerCommand('aldev.updateAppManifest', mh );
     context.subscriptions.push(initializeDisp);
 
