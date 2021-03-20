@@ -8,7 +8,7 @@ export interface SettingsFile {
     local?: string;
     tests?: TestConfig[];
     backup?: string;
-
+    image?: string;
 }
 
 export class SettingsMethods {
@@ -51,42 +51,7 @@ export class SettingsMethods {
         }
     }
 
-    static async validateSettings(_settings: SettingsFile) {
-        if (!_settings.version) {
-            await this.pickVersion().then((value) => {
-                _settings.version = value ? value : "";
-            });
-            if (!_settings.cu) {
-                await this.pickCU().then((value) => {
-                    _settings.cu = value ? value : "";
-                });
-            }
-            if (!_settings.local) {
-                await this.pickLocal().then((value) => {
-                    _settings.local = value ? value : "";
-                });
-            }
-        }
-    }
-
-    static async pickVersion(): Promise<string | undefined> {
-        const result = await vscode.window.showQuickPick(['BC', '2018'], {
-            placeHolder: 'Pick a version',
-        });
-        return result;
-    }
-    static async pickCU(): Promise<string | undefined> {
-        const result = await vscode.window.showInputBox({ placeHolder: "Pick a cumulative update" });
-        return result;
-    }
-    static async pickLocal(): Promise<string | undefined> {
-        const result = await vscode.window.showQuickPick(['DK', 'DE'], {
-            placeHolder: 'Pick a localization',
-        });
-        return result;
-    }
-
-    static settingsFolder(): string | undefined {
+    public static settingsFolder(): string | undefined {
         const fs = require('fs');
         let settingsPath: string;
         let folderPath: string = this.getRootFolderPath();
@@ -100,6 +65,15 @@ export class SettingsMethods {
         }
         return settingsPath;
     }
+
+    static async validateSettings(_settings: SettingsFile) {
+        if (!_settings.version && !_settings.image) {
+            const error = "Could not read settingsfile, please verify that it exists."
+            vscode.window.showErrorMessage(error);
+            throw error;
+        }
+    }
+
 
     static defaultSettingsPath(): string {
         let rootFolder = this.getRootFolderPath();
@@ -134,6 +108,10 @@ export class SettingsMethods {
     
             if (settingsFile.local) {
                 _settings.local = settingsFile.local;
+            }
+            
+            if (settingsFile.image) {
+                _settings.image = settingsFile.image;
             }
     
             fs.writeFileSync(settingsPath, JSON.stringify(_settings, null, 2));

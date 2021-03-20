@@ -2,7 +2,7 @@
     "name": "al-dev",
     "displayName": "AL Developer",
     "description": "AL Developer Helper",
-    "version": "2.1.4",
+    "version": "3.1.1",
     "publisher": "rasmus",
     "icon": "images/logo128.png",
     "engines": {
@@ -19,10 +19,14 @@
         "onCommand:aldev.newInstance",
         "onCommand:aldev.removeInstance",
         "onCommand:aldev.startInstance",
+        "onCommand:aldev.stopInstance",
+        "onCommand:aldev.restartInstance",
         "onCommand:aldev.clearInstance",
         "onCommand:aldev.generateSymbols",
+        "onCommand:aldev.commitImage",
         "onCommand:aldev.createBackup",
         "onCommand:aldev.updateAppManifest",
+        "onCommand:aldev.openSettings",
         "onLanguage:al"
     ],
     "main": "./dist/extension",
@@ -37,6 +41,14 @@
                 "title": "AL Dev: Start Instance"
             },
             {
+                "command": "aldev.stopInstance",
+                "title": "AL Dev: Stop Instance"
+            },
+            {
+                "command": "aldev.restartInstance",
+                "title": "AL Dev: Restart Instance"
+            },
+            {
                 "command": "aldev.clearInstance",
                 "title": "AL Dev: Clear Instance"
             },
@@ -45,8 +57,8 @@
                 "title": "AL Dev: Generate Symbols"
             },
             {
-                "command": "aldev.createBackup",
-                "title": "AL Dev: Generate Backupfile"
+                "command": "aldev.commitImage",
+                "title": "AL Dev: Commit Image"
             },
             {
                 "command": "aldev.removeInstance",
@@ -55,6 +67,10 @@
             {
                 "command": "aldev.updateAppManifest",
                 "title": "AL Dev: Update App.json Manifest"
+            },
+            {
+                "command": "aldev.openSettings",
+                "title": "AL Dev: Open Settings.json"
             }
         ],
         "configuration": [
