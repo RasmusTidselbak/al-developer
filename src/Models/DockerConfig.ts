@@ -1,14 +1,15 @@
 export default interface DockerConfig {
     
     name: string;
-    NAVVersion: string;
-    cu?: string;
-    local?: string;
     username: string;
     password: string;
-    clickonce: string;
     sqlconnection: string;
+    files?: string;
     webclient: string;
+    soap?: number;
+    odata?: number;
+    clientport?: number;
+    devport?: number;
     owner?: string;
     backup?: string;
     image?: string;

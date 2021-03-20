@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import { ServerConfigMethods as sc, ServerConfig } from "../Models/ServerConfig";
 import httpHandler from "./Instance/httpHandler";
-import localhostHandler from "./Instance/localhostHandler";
 import { SettingsMethods } from "../Models/Settings";
 import * as fs from 'fs';
 
@@ -13,26 +12,12 @@ export default class {
             SettingsMethods.saveSettings(navSettings);
             let dockerConf: ServerConfig = sc.defaultDockerConfig();
 
-            dockerConf.docker.NAVVersion = navSettings.version ? navSettings.version : "";
-            if (dockerConf.docker.NAVVersion.toUpperCase() === "BC15") {
-                dockerConf.serverInstance = "BC";
-            }
-            dockerConf.docker.cu = navSettings.cu;
-            dockerConf.docker.local = navSettings.local;
+            dockerConf.serverInstance = "BC";
             dockerConf.docker.owner = vscode.workspace.getConfiguration().get('aldev.cloudKey');
             dockerConf.docker.backup = navSettings.backup;
             dockerConf.docker.image = navSettings.image;
 
-            const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
-
-            switch (dockerAgentType) {
-                case 'localhost':
-                    localhostHandler.newInstance(dockerConf, replaceLaunchConfig);
-                    break;
-                case 'Cloud':
-                    httpHandler.newInstance(dockerConf, replaceLaunchConfig);
-                    break;
-            }
+            httpHandler.newInstance(dockerConf, replaceLaunchConfig);
         })
             .catch((err) => {
                 console.log(err);
@@ -225,7 +210,7 @@ export default class {
 
         vscode.window.showInputBox({ placeHolder: "New Image Name" }).then((ImageName) => {
             const action: string = "COMMIT=" + ImageName;
-            if(ImageName === ""){
+            if (ImageName === "") {
                 vscode.window.showErrorMessage('Invalid image name');
                 return;
             }
@@ -246,7 +231,7 @@ export default class {
                 location: vscode.ProgressLocation.Notification,
                 title: "Committing instance " + dockerConf.docker.name + " to image " + ImageName
             }, (progress, token) => {
-                const p = new Promise(resolve => {
+                const p = new Promise<void>(resolve => {
 
                     let statusdisp = vscode.window.setStatusBarMessage("$(zap) Instance: Committing");
                     const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
@@ -293,23 +278,12 @@ export default class {
             location: vscode.ProgressLocation.Notification,
             title: "Removing instance " + dockerConf.docker.name
         }, (progress, token) => {
-            const p = new Promise(resolve => {
+            const p = new Promise<void>(resolve => {
 
-                const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
-                switch (dockerAgentType) {
-                    case 'localhost':
-                        localhostHandler.removeInstance(dockerConf, () => {
-                            removeLaunchConfig();
-                            resolve();
-                        });
-                        break;
-                    case 'Cloud':
-                        httpHandler.removeInstance(dockerConf, () => {
-                            removeLaunchConfig();
-                            resolve();
-                        });
-                        break;
-                }
+                httpHandler.removeInstance(dockerConf, () => {
+                    removeLaunchConfig();
+                    resolve();
+                });
             });
             return p;
         });
@@ -339,23 +313,12 @@ function getInstanceStatus(serverConf: ServerConfig) {
         location: vscode.ProgressLocation.Notification,
         title: "Starting instance " + serverConf.docker.name
     }, (progress, token) => {
-        const p = new Promise(resolve => {
+        const p = new Promise<void>(resolve => {
 
-            const dockerAgentType = vscode.workspace.getConfiguration().get('aldev.dockerAgentType');
-            switch (dockerAgentType) {
-                case 'localhost':
-                    localhostHandler.getInstanceStatus(serverConf, (status: string) => {
-                        vscode.window.setStatusBarMessage("$(zap) Instance: " + status);
-                        resolve();
-                    });
-                    break;
-                case 'Cloud':
-                    httpHandler.getInstanceStatus(serverConf, (status: string) => {
-                        vscode.window.setStatusBarMessage("$(zap) Instance: " + status);
-                        resolve();
-                    });
-                    break;
-            }
+            httpHandler.getInstanceStatus(serverConf, (status: string) => {
+                vscode.window.setStatusBarMessage("$(zap) Instance: " + status);
+                resolve();
+            });
         });
         return p;
     });

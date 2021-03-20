@@ -11,9 +11,9 @@ export default class {
             uri: agentURL + "/api/docker",
             method: "POST",
             body: {
-                "Version": serverConf.docker.NAVVersion,
-                "CU": serverConf.docker.cu ? "" + serverConf.docker.cu : "0",
-                "Local": serverConf.docker.local ? serverConf.docker.local : "w1",
+                "Version": "",
+                "CU": "0",
+                "Local": "",
                 "Owner": serverConf.docker.owner,
                 "Backup": serverConf.docker.backup,
                 "Image": serverConf.docker.image
@@ -41,10 +41,15 @@ export default class {
             
             if (body.version.toUpperCase() === "BC15") {
                 serverConf.serverInstance = "BC";
+            } else {
+                serverConf.serverInstance = "NAV";
             }
-
-            serverConf.docker.clickonce = agentURL + ':' + body.webport + '/' + serverConf.serverInstance + '/';
             serverConf.docker.webclient = agentURL + ':' + body.webclientport + '/' + serverConf.serverInstance + '/';
+            serverConf.docker.files = agentURL + ':' + body.webport;
+            serverConf.docker.soap = body.soapport;
+            serverConf.docker.odata = body.odataport;
+            serverConf.docker.clientport = body.clientport;
+            serverConf.docker.devport = body.devport;
             serverConf.docker.sqlconnection = agentURL.replace(/(^\w+:|^)\/\//, '') + ',' + body.sqlport + '\\SQLEXPRESS';
 
             callback(serverConf);

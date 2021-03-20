@@ -24,13 +24,12 @@ export class ServerConfigMethods {
             serverInstance: "NAV",
             docker: {
                 name: "",
-                NAVVersion: "bcsandbox",
-                local: "dk",
                 username: "admin",
                 password: "",
-                clickonce: "",
                 webclient: "",
-                sqlconnection: ""
+                sqlconnection: "",
+                soap: 0,
+                odata: 0
             }
 
         };
