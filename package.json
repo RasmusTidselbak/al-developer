@@ -122,12 +122,12 @@
         "@types/mocha": "^2.2.42",
         "@types/node": "^8.10.66",
         "mocha": "^5.2.0",
-        "ts-loader": "^5.4.5",
+        "ts-loader": "^9.4.2",
         "tslint": "^5.20.1",
         "typescript": "^3.9.9",
         "vscode": "^1.1.37",
-        "webpack": "^4.46.0",
-        "webpack-cli": "^3.3.12"
+        "webpack": "^5.75.0",
+        "webpack-cli": "^5.0.1"
     },
     "dependencies": {
         "ajv": "^6.12.6",
